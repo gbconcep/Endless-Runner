@@ -26,9 +26,9 @@ class Play extends Phaser.Scene {
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
         // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'smallship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'saucer', 0, 10).setOrigin(0,0);
+        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'smallship', 0, 30).setOrigin(0, 0);
+        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'saucer', 0, 20).setOrigin(0,0);
+        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -45,7 +45,7 @@ class Play extends Phaser.Scene {
 
         // display score
         let scoreConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Arial',
             fontSize: '28px',
             backgroundColor: '#F3B141',
             color: '#843605',
@@ -64,15 +64,15 @@ class Play extends Phaser.Scene {
         // 60-second play clock
         scoreConfig.fixedWidth = 0
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'PRESS (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
         console.log(this.clock.elapsed);
 
         // display timer
         let timeConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Arial',
             fontSize: '28px',
             backgroundColor: '#F3B141',
             color: '#843605',
@@ -86,14 +86,14 @@ class Play extends Phaser.Scene {
         this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.delay/100000, timeConfig);
 
         // fire text
-        this.add.text(game.config.width/2.5, game.config.height/6.9, 'FIRE', scoreConfig).setOrigin(0.5);
-        this.add.text(game.config.width/1.6, game.config.height/6.9, 'COMPUTER', scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2.5, game.config.height/6.5, 'FIRE', scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/1.6, game.config.height/6.5, 'COMPUTER', scoreConfig).setOrigin(0.5);
     }
 
 
     update() {
         // check key input for restart
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             this.scene.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
