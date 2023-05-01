@@ -10,6 +10,8 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameWidth: 32, startFrame: 0, endFrame: 9});
+        // load music
+        this.sound.play('sfx_play_music');
       }
     create() {
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
@@ -123,7 +125,26 @@ class Play extends Phaser.Scene {
         this.p1Score += ship.points;
         console.log(this.p1Score)
         this.scoreLeft.text = this.p1Score;
-        this.sound.play('sfx_explosion');
+        
+        let random = Math.floor(Math.random() * 4) + 1
+        console.log(random)
+        switch (random)
+        {
+            case 1:
+                this.sound.play('sfx_explosion1');
+                break;
+            case 2:
+                this.sound.play('sfx_explosion2');
+                break;
+            case 3:
+                this.sound.play('sfx_explosion3');
+                break;
+            case 4:
+                this.sound.play('sfx_explosion4');
+                break;
+            default:
+                break;
+        }
     }
 }
 
