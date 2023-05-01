@@ -15,6 +15,7 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameWidth: 32, startFrame: 0, endFrame: 9});
         // load music
         this.sound.play('sfx_play_music');
+        
       }
     create() {
         this.space = this.add.tileSprite(0, 0, 640, 480, 'space').setOrigin(0, 0);
@@ -93,17 +94,20 @@ class Play extends Phaser.Scene {
 
     update() {
         // check key input for restart
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
         this.space.tilePositionX -= 4;
-        this.p1Rocket.update();
-        this.ship01.update();
-        this.ship02.update();
-        this.ship03.update();
+
+        if(!this.gameOver) {
+            this.p1Rocket.update();
+            this.ship01.update();
+            this.ship02.update();
+            this.ship03.update();
+        }
         // check collisions
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
@@ -117,15 +121,15 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
         }
-        if (!this.gameOver) {
-            this.p1Rocket.update();
-            this.ship01.update();
-            this.ship02.update();
-            this.ship03.update();
-        }
+
         // clock update
         this.timeRight.text = Math.ceil(this.clock.delay - this.clock.elapsed) / 1000;
         // add time if hit
+        // highScore
+        if (this.highScore >= this.p1Score) {
+            game.highScore = this.p1Score
+        }
+
     }
 
     checkCollision(rocket, ship) {

@@ -1,6 +1,6 @@
 // Name:Gavin Concepcion
 // Mod Title: Rocket Patrol Modpack X
-// Approx. Hours Spent: 5 (subject to change)
+// Approx. Hours Spent: 6 (subject to change)
 //
 // Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
 // - Music: Nexus by IMG; Taken from uppbeat.io
@@ -21,6 +21,8 @@
 // Create a new scrolling tile sprite for the background (5)
 // - Tile sprite made in pixelart
 //
+// Track a high score that persists across scenes and display it in the UI (5)
+//
 // Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
 // - Made two different enemy Spaceship types, with different sizes and speeds. They're in the back to make them harder to hit. 
 //
@@ -35,6 +37,7 @@ let config = {
 }
 
 let game = new Phaser.Game(config);
+game.highScore = 0;
 
 // set Ui sizes
 let borderUISize = game.config.height / 15;
