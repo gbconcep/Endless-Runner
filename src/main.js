@@ -23,11 +23,16 @@
 //
 // Track a high score that persists across scenes and display it in the UI (5)
 //
+// Randomize each spaceship's movement direction at the start of each play (5)
+// 
+// Implement parallax scrolling for the background (10)
+//
 // Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
 // - Made two different enemy Spaceship types, with different sizes and speeds. They're in the back to make them harder to hit. 
+// The front ship (the default ship in the original Rocket Patrol assignment) is worth 10 points. The middle ship is worth 20 points.
+// Finally the back ship (also smallest ship) is worth 30 points.
 //
 // Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
-// - Small and saucer types are the only ones to add time to the clock because they're harder to hit.
 
 let config = {
     type: Phaser.CANVAS,

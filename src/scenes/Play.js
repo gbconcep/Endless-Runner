@@ -19,17 +19,20 @@ class Play extends Phaser.Scene {
       }
     create() {
         this.space = this.add.tileSprite(0, 0, 640, 480, 'space').setOrigin(0, 0);
+        // add rocket (p1)
+        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        // add spaceships (x3)
+        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'smallship', 0, 30).setOrigin(0, 0);
+        this.ship01.moveSpeed = game.settings.spaceshipSpeed*3
+        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'saucer', 0, 20).setOrigin(0,0);
+        this.ship02.moveSpeed = game.settings.spaceshipSpeed*2
+        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.width - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(game.config.width - borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-        // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
-        // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'smallship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'saucer', 0, 20).setOrigin(0,0);
-        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -89,10 +92,35 @@ class Play extends Phaser.Scene {
         // fire text
         this.add.text(game.config.width/2.5, game.config.height/6.5, 'FIRE', scoreConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.6, game.config.height/6.5, 'COMPUTER', scoreConfig).setOrigin(0.5);
+
+        // high score display
+        let highConfig = {
+            fontFamily: 'Arial',
+            fontSize: '28px',
+            backgroundColor: '#black',
+            color: 'white',
+            align: 'right',
+            padding: {
+            top: 5,
+            bottom: 5,
+            },
+            fixedWidth: 100
+        }
+        this.highBottom = this.add.text(game.config.width/1.6, game.config.height/1.5, this.highScore, highConfig);
     }
 
-
     update() {
+        // randomized direction of spaceships
+        let direction = Math.floor(Math.random() * 2) + 1
+        switch (direction)
+        {
+            case 1:
+                this.x -= this.moveSpeed;
+                break;
+            case 2:
+                this.x -= -this.moveSpeed;
+                break;
+        }
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
@@ -104,7 +132,7 @@ class Play extends Phaser.Scene {
 
         if(!this.gameOver) {
             this.p1Rocket.update();
-            this.ship01.update();
+            this.ship01.update(); 
             this.ship02.update();
             this.ship03.update();
         }
@@ -124,12 +152,10 @@ class Play extends Phaser.Scene {
 
         // clock update
         this.timeRight.text = Math.ceil(this.clock.delay - this.clock.elapsed) / 1000;
-        // add time if hit
         // highScore
         if (this.highScore >= this.p1Score) {
             game.highScore = this.p1Score
         }
-
     }
 
     checkCollision(rocket, ship) {
@@ -139,6 +165,12 @@ class Play extends Phaser.Scene {
         } else {
           return false;
         }
+        // add more points depending on which ship is hit
+        if (this.ship02) {
+            this.p1Score += 10;
+        }
+        elif (this.ship01) 
+            this.p1Score += 20;
     }
 
     shipExplode(ship) {
@@ -157,7 +189,16 @@ class Play extends Phaser.Scene {
         this.p1Score += ship.points;
         console.log(this.p1Score)
         this.scoreLeft.text = this.p1Score;
-        
+
+        // explosion adds to timer
+        if (this.ship01) {
+            this.clock.elapsed -= 10000
+        }
+        if (this.ship02) {
+            this.clock.elapsed -= 5000
+        }
+
+        // random explosion sounds
         let random = Math.floor(Math.random() * 4) + 1
         console.log(random)
         switch (random)

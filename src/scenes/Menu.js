@@ -6,6 +6,7 @@ class Menu extends Phaser.Scene {
     preload() {
         // load images/tile sprites
         this.load.image('title', './assets/title.png');
+        this.load.image('background', './assets/titlescreenbackground.png');
         // load audio
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
@@ -17,9 +18,9 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_explosion4', './assets/wah.mp3');
     }
 
-
     create() {
-        this.title = this.add.tileSprite(0, 0, 640, 480, 'title').setOrigin(0, 0);
+        this.background = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
+        this.title = this.add.tileSprite(10, 10, 500, 500, 'title').setOrigin(0, 0);
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.width - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -38,8 +39,6 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        //
-        this.hiScore = this.add.text(410, borderUISize + borderPadding - 16, parseInt(game.highScore));
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -48,6 +47,9 @@ class Menu extends Phaser.Scene {
         menuConfig.backgroundColor = '#00FF00';
         menuConfig.color = '#000';
         this.add.text(game.config.width/1.85, game.config.height/1.4 + borderUISize + borderPadding, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
+        // show high score
+        this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
+        this.hiScore = this.add.text(400, 420, parseInt(game.highScore));
     }
 
     update() {
@@ -55,7 +57,7 @@ class Menu extends Phaser.Scene {
             // easy mode
             game.settings = {
                 spaceshipSpeed: 3,
-                gameTimer: 5000
+                gameTimer: 60000
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');
@@ -69,6 +71,6 @@ class Menu extends Phaser.Scene {
             this.sound.play('sfx_select');
             this.scene.start('playScene');
         }
-
+        this.background.tilePositionX -= 4;
     }
 }
