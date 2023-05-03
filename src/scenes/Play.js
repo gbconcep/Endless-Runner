@@ -21,6 +21,7 @@ class Play extends Phaser.Scene {
 
     create() {
         this.sfx = this.sound.add('sfx_play_music');
+        this.sfx.setLoop(true);
         this.sfx.play()
         // background tiles
         this.space = this.add.tileSprite(0, 0, 640, 480, 'space').setOrigin(0, 0);
@@ -33,6 +34,13 @@ class Play extends Phaser.Scene {
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'saucer', 0, 20).setOrigin(0,0);
         this.ship02.moveSpeed = game.settings.spaceshipSpeed*2
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        // speed increase after 30 seconds
+        this.time.delayedCall(30000, () => {
+            console.log('call')
+            this.ship01.moveSpeed = game.settings.spaceshipSpeed*5
+            this.ship02.moveSpeed = game.settings.spaceshipSpeed*4
+            this.ship03.moveSpeed = game.settings.spaceshipSpeed*3
+        })
         // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -105,12 +113,6 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        // speed increase after 30 seconds
-        if (this.clock.elapsed > 30000) {
-            this.ship01.moveSpeed = game.settings.spaceshipSpeed*5
-            this.ship02.moveSpeed = game.settings.spaceshipSpeed*4
-            this.ship03.moveSpeed = game.settings.spaceshipSpeed*3
-        }
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();

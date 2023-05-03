@@ -1,6 +1,6 @@
 // Name:Gavin Concepcion
 // Mod Title: Rocket Patrol Modpack X
-// Approx. Hours Spent: 8 (subject to change)
+// Approx. Hours Spent: 11 (subject to change)
 //
 // Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
 // - Music: Nexus by IMG; Taken from uppbeat.io
@@ -24,6 +24,9 @@
 // Track a high score that persists across scenes and display it in the UI (5)
 //
 // Implement the speed increase that happens after 30 seconds in the original game (5)
+//
+// Randomize each spaceship's movement direction at the start of each play (5)
+//
 // 
 // Implement parallax scrolling for the background (10)
 // -Asteroid sprites made in pixelart
@@ -33,8 +36,6 @@
 //
 // Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
 // - Only implemented to the two back ships. Middle ship adds 5 seconds. Back ship adds 7. 
-//
-// Total Points: 100
 
 let config = {
     type: Phaser.CANVAS,
