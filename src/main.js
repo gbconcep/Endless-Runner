@@ -1,6 +1,6 @@
 // Name:Gavin Concepcion
 // Mod Title: Rocket Patrol Modpack X
-// Approx. Hours Spent: 6 (subject to change)
+// Approx. Hours Spent: 8 (subject to change)
 //
 // Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
 // - Music: Nexus by IMG; Taken from uppbeat.io
@@ -19,18 +19,19 @@
 // Implement the 'FIRE' UI text from the original game (5)
 //
 // Create a new scrolling tile sprite for the background (5)
-// - Tile sprite made in pixelart
+// - Background made in pixelart
 //
 // Track a high score that persists across scenes and display it in the UI (5)
 //
 // Randomize each spaceship's movement direction at the start of each play (5)
+//
+// Implement the speed increase that happens after 30 seconds in the original game (5)
 // 
 // Implement parallax scrolling for the background (10)
+// -Asteroid sprites made in pixelart
 //
 // Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
-// - Made two different enemy Spaceship types, with different sizes and speeds. They're in the back to make them harder to hit. 
-// The front ship (the default ship in the original Rocket Patrol assignment) is worth 10 points. The middle ship is worth 20 points.
-// Finally the back ship (also smallest ship) is worth 30 points.
+// - Made two different enemy Spaceship types, with different sizes and speeds. They're in the back to make them harder to hit and be worth more points.
 //
 // Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
 
