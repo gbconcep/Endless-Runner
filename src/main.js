@@ -20,12 +20,6 @@
 //
 // Create a new scrolling tile sprite for the background (5)
 // - Background made in pixelart
-//
-// Track a high score that persists across scenes and display it in the UI (5)
-//
-// Randomize each spaceship's movement direction at the start of each play (5)
-//
-// Implement the speed increase that happens after 30 seconds in the original game (5)
 // 
 // Implement parallax scrolling for the background (10)
 // -Asteroid sprites made in pixelart
@@ -34,6 +28,8 @@
 // - Made two different enemy Spaceship types, with different sizes and speeds. They're in the back to make them harder to hit and be worth more points.
 //
 // Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
+//
+// Total Points: 90
 
 let config = {
     type: Phaser.CANVAS,
