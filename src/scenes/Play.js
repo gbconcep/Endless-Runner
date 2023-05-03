@@ -163,12 +163,6 @@ class Play extends Phaser.Scene {
         } else {
           return false;
         }
-        // add more points depending on which ship is hit
-        if (this.ship02) {
-            this.p1Score += 10;
-        }
-        elif (this.ship01) 
-            this.p1Score += 20;
     }
 
     shipExplode(ship) {
