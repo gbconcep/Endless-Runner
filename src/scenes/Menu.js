@@ -48,7 +48,7 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/1.85, game.config.height/1.4 + borderUISize + borderPadding, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
         // show high score
         this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
-        this.hiScore = this.add.text(400, 420, parseInt(game.highScore));
+        this.hiScore = this.add.text(400, 420, game.highScore);
     }
 
     update() {
@@ -70,6 +70,10 @@ class Menu extends Phaser.Scene {
             this.sound.play('sfx_select');
             this.scene.start('playScene');
         }
-        this.background.tilePositionX -= 4;
+        if (game.highScore <= this.p1Score) {
+            game.highScore = this.p1Score
+            this.hiScore.text = game.highScore
+        }
+        this.background.tilePositionX += 4;
     }
 }

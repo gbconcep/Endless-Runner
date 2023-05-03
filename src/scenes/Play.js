@@ -101,19 +101,15 @@ class Play extends Phaser.Scene {
         
         // // high score display
         this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
-        this.hiScore = this.add.text(400, 420, parseInt(game.highScore));
+        this.hiScore = this.add.text(400, 420, game.highScore);
     }
 
     update() {
-        // 
-        if (this.clock.elapsed > 30) {
-            this.ship01.moveSpeed = game.settings.spaceshipSpeed*4
-        }
-        if (this.clock.elapsed > 30) {
-            this.ship02.moveSpeed = game.settings.spaceshipSpeed*3
-        }
-        if (this.clock.elapsed > 30) {
-            this.ship03.moveSpeed = game.settings.spaceshipSpeed*2
+        // speed increase after 30 seconds
+        if (this.clock.elapsed > 30000) {
+            this.ship01.moveSpeed = game.settings.spaceshipSpeed*5
+            this.ship02.moveSpeed = game.settings.spaceshipSpeed*4
+            this.ship03.moveSpeed = game.settings.spaceshipSpeed*3
         }
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
@@ -125,8 +121,11 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
             this.sfx.pause()
         }
-        this.space.tilePositionX += 4;
-        this.asteroid.tilePositionX += 7;
+        this.space.tilePositionX -= 4;
+        this.asteroid.tilePositionX -= 7;
+
+        // clock update
+        this.timeRight.text = Math.ceil(this.clock.delay - this.clock.elapsed) / 1000;
 
         if(!this.gameOver) {
             this.p1Rocket.update();
@@ -142,17 +141,18 @@ class Play extends Phaser.Scene {
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship02);
+            this.clock.elapsed -= 5000
         }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+            this.clock.elapsed -= 7000
         }
 
-        // clock update
-        this.timeRight.text = Math.ceil(this.clock.delay - this.clock.elapsed) / 1000;
         // highScore
-        if (this.highScore >= this.p1Score) {
+        if (game.highScore <= this.p1Score) {
             game.highScore = this.p1Score
+            this.hiScore.text = game.highScore
         }
     }
 
@@ -183,7 +183,7 @@ class Play extends Phaser.Scene {
         this.scoreLeft.text = this.p1Score;
 
         // explosion adds to timer
-        this.clock.elapsed -= 5000
+        // this.clock.elapsed -= 5000
 
         // random explosion sounds
         let random = Math.floor(Math.random() * 4) + 1
