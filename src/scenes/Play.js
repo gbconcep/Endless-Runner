@@ -101,7 +101,7 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.delay/100000, timeConfig);
+        this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.elapsed, timeConfig);
 
         // fire text
         this.add.text(game.config.width/2.5, game.config.height/6.5, 'FIRE', scoreConfig).setOrigin(0.5);
