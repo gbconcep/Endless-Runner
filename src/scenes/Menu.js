@@ -41,7 +41,7 @@ class Menu extends Phaser.Scene {
         // define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         // show menu text
-        menuConfig.backgroundColor = '#00FF00';
+        menuConfig.backgroundColor = 'cyan';
         menuConfig.color = '#000';
         this.add.text(game.config.width/1.85, game.config.height/1.4 + borderUISize + borderPadding, 'Press SPACE to start', menuConfig).setOrigin(0.5);
         // show high score

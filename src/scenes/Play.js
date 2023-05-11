@@ -10,9 +10,10 @@ class Play extends Phaser.Scene {
         this.load.image('smallship', './assets/smallship.png');
         this.load.image('saucer', './assets/saucer.png');
         this.load.image('starfield', './assets/starfield.png');
-        this.load.image('space', './assets/space.png');
+        this.load.image('wall', './assets/wall.png');
         this.load.image('particle', './assets/explosion.png');
-        this.load.image('asteroid', './assets/asteroid-lane.png');
+        this.load.image('floor', './assets/floor.png');
+        this.load.spritesheet('myguy', 'assets/myguy.png', 38, 48);
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameWidth: 32, startFrame: 0, endFrame: 9});
         // load music
@@ -24,8 +25,8 @@ class Play extends Phaser.Scene {
         this.sfx.setLoop(true);
         this.sfx.play()
         // background tiles
-        this.space = this.add.tileSprite(0, 0, 640, 480, 'space').setOrigin(0, 0);
-        this.asteroid = this.add.tileSprite(0, 0, 640, 480, 'asteroid').setOrigin(0, 0);
+        this.wall = this.add.tileSprite(0, 0, 640, 480, 'wall').setOrigin(0, 0);
+        this.floor = this.add.tileSprite(0, 0, 640, 480, 'floor').setOrigin(0, 0);
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
         // add spaceships (x3)
@@ -123,8 +124,8 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
             this.sfx.pause()
         }
-        this.space.tilePositionX -= 4;
-        this.asteroid.tilePositionX -= 7;
+        this.wall.tilePositionX -= 4;
+        this.floor.tilePositionX -= 7;
 
         // clock update
         this.timeRight.text = Math.ceil(this.clock.delay - this.clock.elapsed) / 1000;

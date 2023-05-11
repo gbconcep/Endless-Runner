@@ -1,6 +1,6 @@
 // Name:Gavin Concepcion
 // Mod Title: Jump and Shoot
-// Approx. Hours Spent: 11 (subject to change)
+// Approx. Hours Spent: 4 (subject to change)
 
 let config = {
     type: Phaser.CANVAS,
