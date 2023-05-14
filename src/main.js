@@ -1,6 +1,6 @@
 /* Name:Gavin Concepcion
  Mod Title: Jump and Shoot
-Approx. Hours Spent: 6 (subject to change)
+Approx. Hours Spent: 9 (subject to change)
 Physics Source: https://stackoverflow.com/questions/55302007/how-add-physics-to-phaser-3-sprite
 Gravity: https://phasergames.com/using-gravity-in-phaser-3/
 https://newdocs.phaser.io/docs/3.54.0/Phaser.GameObjects.Components.Size#setSize

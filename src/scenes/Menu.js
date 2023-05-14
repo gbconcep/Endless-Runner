@@ -11,7 +11,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
         this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
-        this.load.audio('sfx_jump', './assets/jumpgrunt.wav');
+        this.load.audio('sfx_jump', './assets/sfx_voice.wav');
     }
 
     create() {
@@ -36,9 +36,9 @@ class Menu extends Phaser.Scene {
         // show menu text
         menuConfig.backgroundColor = 'cyan';
         menuConfig.color = '#000';
-        this.add.text(game.config.width/1.85, game.config.height/1.4 + borderUISize + borderPadding, 'Press SPACE to start', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/1.4 + borderUISize + borderPadding, 'Press SPACE to start', menuConfig).setOrigin(0.5);
         // show high score
-        this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
+        this.add.text(225, 420, 'BEST TIME:').setOrigin(0, 0);
         this.hiScore = this.add.text(400, 420, game.highScore);
     }
 

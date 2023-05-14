@@ -49,11 +49,12 @@ class Play extends Phaser.Scene {
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character').setOrigin(0.5, 0);
         // add obstacles (x3)
-        this.obstacle01 = new Obstacles(this, game.config.width + game.config.height*0.71, 'rocket', 0, 30).setOrigin(0, 0);
+        this.obstacle01 = new Obstacles(this, game.config.width + game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
         this.obstacle01.moveSpeed = game.settings.obstacleSpeed*0.5
-        this.obstacle02 = new Obstacles(this, game.config.width + borderUISize*3, game.config.height*0.71, 'block', 0, 20).setOrigin(0,0);
+        this.obstacle02 = new Obstacles(this, game.config.width + borderUISize*3, game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
+        this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
         this.obstacle02.moveSpeed = game.settings.obstacleSpeed*0.5
-        this.obstacle03 = new Obstacles(this, game.config.width, game.config.height*0.71, 'box', 0, 10).setOrigin(0,0);
+        this.obstacle03 = new Obstacles(this, game.config.width, game.config.height*0.72, 'box', 0, 0).setOrigin(0,0);
         this.obstacle03.moveSpeed = game.settings.obstacleSpeed*0.5
         // speed increase after 30 seconds
         this.time.delayedCall(30000, () => {
@@ -111,6 +112,7 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+        console.log(this.clock.elapsed);
 
         // display timer
         let timeConfig = {

@@ -37,7 +37,7 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
         // jump button 
         if(Phaser.Input.Keyboard.JustDown(keyUP)) {
             //this.y -= 50;
-            this.anims.play('jump');  
+            this.anims.play('jump');
             this.body.velocity = new Phaser.Math.Vector2(0, -80)
             this.setGravityY(40)
         }
