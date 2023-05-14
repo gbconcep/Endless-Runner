@@ -12,34 +12,28 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
         super(scene, x, y, texture, frame);
         scene.physics.add.existing(this); 
         scene.add.existing(this);
-        this.isFiring = false;
-        this.moveSpeed = 4;
+        this.isJumping = false;
+        this.moveSpeed = 10;
         this.setGravityY(50);
-        this.sfxRocket = scene.sound.add('sfx_rocket'); // add rocket sfx
+        this.sfxJump = scene.sound.add('sfx_jump');
+        this.sfxVoice = scene.sound.add('sfx_voice');
         this.anims.play('running');
     }
     
-    // let run = this.sprite.animations.add(
-    //     'running',
-    //     Phaser.Animation.generateFrameNames('Character Sprite ', 1, 3),
-    //     true);
-    // let jump = this.sprite.animations.add(
-    //     'jump',
-    //     Phaser.Animation.generateFrameNames('Character Sprite ', 4),
-    //     true);
-    // let slide = this.sprite.animations.add(
-    //     'slide',
-    //     Phaser.Animation.generateFrameNames('Character Sprite', 10),
-    //     true);
-    // }
-
     update() {   
         // jump button 
         if(Phaser.Input.Keyboard.JustDown(keyUP)) {
             //this.y -= 50;
+            this.isJumping = true
             this.anims.play('jump');
             this.body.velocity = new Phaser.Math.Vector2(0, -80)
-            this.setGravityY(40)
+            this.setGravityY(50)
+            this.sfxJump.play();
+            this.sfxVoice.play();
+        }
+
+        if (this.y > [game.config.height*0.71]) {
+            this.isJumping = false
         }
 
         if (this.y == [game.config.height*0.71]) {
@@ -47,7 +41,8 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
  }
 
         // slide button
-        if(Phaser.Input.Keyboard.JustDown(keyDOWN) && this.y == [game.config.height*0.75]) {
+        if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            // && this.y == [game.config.height*0.71]
             this.anims.play('slide');
             this.setGravityY(50)
         }

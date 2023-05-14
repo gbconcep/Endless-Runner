@@ -44,24 +44,36 @@ class Play extends Phaser.Scene {
             key: 'slide',
             frames: this.anims.generateFrameNames('slide', {prefix: 'Character Sprite ', start: 10, end: 10}),
         frameRate: 9,
-        repeat: 30
+        repeat: -1
         });
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character').setOrigin(0.5, 0);
         // add obstacles (x3)
-        this.obstacle01 = new Obstacles(this, game.config.width + game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
+        this.obstacle01 = new Obstacles(this, game.config.width+ borderUISize*10, game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
         this.obstacle01.moveSpeed = game.settings.obstacleSpeed*0.5
-        this.obstacle02 = new Obstacles(this, game.config.width + borderUISize*3, game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
+        this.obstacle02 = new Obstacles(this, game.config.width + borderUISize*5, game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
         this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
         this.obstacle02.moveSpeed = game.settings.obstacleSpeed*0.5
-        this.obstacle03 = new Obstacles(this, game.config.width, game.config.height*0.72, 'box', 0, 0).setOrigin(0,0);
+        this.obstacle03 = new Obstacles(this, game.config.width, game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
         this.obstacle03.moveSpeed = game.settings.obstacleSpeed*0.5
         // speed increase after 30 seconds
         this.time.delayedCall(30000, () => {
             console.log('call')
-            this.obstacle01.moveSpeed = game.settings.obstacleSpeed*3
-            this.obstacle02.moveSpeed = game.settings.obstacleSpeed*3
-            this.obstacle03.moveSpeed = game.settings.obstacleSpeed*3
+            this.obstacle01.moveSpeed = game.settings.obstacleSpeed
+            this.obstacle02.moveSpeed = game.settings.obstacleSpeed
+            this.obstacle03.moveSpeed = game.settings.obstacleSpeed
+        })
+        this.time.delayedCall(60000, () => {
+            console.log('call')
+            this.obstacle01.moveSpeed = game.settings.obstacleSpeed*1.5
+            this.obstacle02.moveSpeed = game.settings.obstacleSpeed*1.5
+            this.obstacle03.moveSpeed = game.settings.obstacleSpeed*1.5
+        })
+        this.time.delayedCall(90000, () => {
+            console.log('call')
+            this.obstacle01.moveSpeed = game.settings.obstacleSpeed*2
+            this.obstacle02.moveSpeed = game.settings.obstacleSpeed*2
+            this.obstacle03.moveSpeed = game.settings.obstacleSpeed*2
         })
         // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -160,16 +172,19 @@ class Play extends Phaser.Scene {
         }
         // check collisions
         if(this.checkCollision(this.p1Character, this.obstacle03)) {
+            // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle03);
             this.gameOver = true;
         }
         if (this.checkCollision(this.p1Character, this.obstacle02)) {
+            // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle02);
             this.gameOver = true;
         }
         if (this.checkCollision(this.p1Character, this.obstacle01)) {
+            // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle01);
             this.gameOver = true;
@@ -190,13 +205,7 @@ class Play extends Phaser.Scene {
           return false;
         }
     }
-
-    // characterAnimation(p1Character) {
-    //     console.log("hi")
-    //     let running = this.add.sprite(p1Character, 'character', 1, 3).setOrigin(0,0);
-    //     running.anims.play('run');
-    // }
-
+    
     // characterExplode(ship) {
     //     console.log("hello")
     //     // temporarily hide ship

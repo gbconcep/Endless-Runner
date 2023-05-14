@@ -11,7 +11,10 @@ class Menu extends Phaser.Scene {
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
         this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
-        this.load.audio('sfx_jump', './assets/sfx_voice.wav');
+        this.load.audio('sfx_jump', './assets/sfx_jump.wav');
+        this.load.audio('sfx_voice', './assets/sfx_voice.wav');
+        this.load.audio('sfx_running', './assets/running.mp3');
+        this.load.audio('sfx_death', './assets/death-scream.wav');
     }
 
     create() {
@@ -46,7 +49,7 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
             // easy mode
             game.settings = {
-                jumpSpeed: 2,
+                jumpSpeed: 5,
                 obstacleSpeed: 3,
                 gameTimer: 60000
             }
@@ -57,6 +60,5 @@ class Menu extends Phaser.Scene {
             game.highScore = this.p1Score
             this.hiScore.text = game.highScore
         }
-        // this.wall.tilePositionX += 4;
     }
 }

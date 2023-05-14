@@ -1,12 +1,13 @@
 /* Name:Gavin Concepcion
- Mod Title: Jump and Shoot
-Approx. Hours Spent: 9 (subject to change)
+ Mod Title: Cyber Dash
+Approx. Hours Spent: 11 (subject to change)
 Physics Source: https://stackoverflow.com/questions/55302007/how-add-physics-to-phaser-3-sprite
 Gravity: https://phasergames.com/using-gravity-in-phaser-3/
 https://newdocs.phaser.io/docs/3.54.0/Phaser.GameObjects.Components.Size#setSize
+Running Sound Effect from Sound Library: https://www.youtube.com/watch?v=GZmkrgndFOs
 The biggest challeges that I faced was getting the sprites to work and change based off of the character's action as well as the jump physics.
 I'm very proud of the sprite I made for my player character. 
-I really like the design I made for him. For the animations, I used the Mega Man sprite as a basis and it turned out great because of that. */
+I really like the design I made for him. For the animations, I used the Mega Man sprite as a basis and it turned out great because of that.*/
 
 let config = {
     type: Phaser.CANVAS,
