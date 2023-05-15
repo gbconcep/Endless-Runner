@@ -44,14 +44,7 @@ class Play extends Phaser.Scene {
             key: 'slide',
             frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 10, end: 10}),
         frameRate: 9,
-        AnimationTimeline: 1000
-        });
-        // death animation
-        this.anims.create({
-            key: 'slide',
-            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 10, end: 10}),
-        frameRate: 9,
-        AnimationTimeline: 1000
+        repeat: -1
         });
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character').setOrigin(0.5, 0);
@@ -113,7 +106,7 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
-        // console.log(this.clock.elapsed);
+        console.log(this.clock.elapsed);
 
         // display timer
         let timeConfig = {
@@ -157,7 +150,6 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
             this.sfx.pause()
         }
-
         this.wall.tilePositionX += 4;
         this.floor.tilePositionX += 4;
 
@@ -189,7 +181,7 @@ class Play extends Phaser.Scene {
             // this.characterExplode(this.obstacle01);
             this.gameOver = true;
         }
-        
+
         // highScore
         // if (game.highScore <= this.p1Score) {
         //     game.highScore = this.p1Score
@@ -197,28 +189,45 @@ class Play extends Phaser.Scene {
         // }
     }
 
-    checkCollision(p1Character, obstacle) {
+    checkCollision(p1Character, obstacle03) {
         // simple AABB checking
-        if (p1Character.x < obstacle.x + obstacle.width && p1Character.x + p1Character.width > obstacle.x && p1Character.y < obstacle.y + obstacle.height && p1Character.height + p1Character.y > obstacle.y) {
+        if (p1Character.x < obstacle03.x + obstacle03.width && p1Character.x + p1Character.width > obstacle03.x && p1Character.y < obstacle03.y + obstacle03.height && p1Character.height + p1Character.y > obstacle03.y) {
+          return true;
+        } else {
+          return false;
+        }
+    }
+
+    checkCollision(p1Character, obstacle02) {
+        // simple AABB checking
+        if (p1Character.x < obstacle02.x + obstacle02.width && p1Character.x + p1Character.width > obstacle02.x && p1Character.y < obstacle02.y + obstacle02.height && p1Character.height + p1Character.y > obstacle02.y) {
+          return true;
+        } else {
+          return false;
+        }
+    }
+
+    checkCollision(p1Character, obstacle01) {
+        // simple AABB checking
+        if (p1Character.x < obstacle01.x + obstacle01.width && p1Character.x + p1Character.width > obstacle01.x && p1Character.y < obstacle01.y + obstacle01.height && p1Character.height + p1Character.y > obstacle01.y) {
           return true;
         } else {
           return false;
         }
     }
     
-    characterExplode(ship) {
-        console.log("hello")
-        // temporarily hide ship
-        p1Character.alpha = 0;
-        // create explosion sprite at ship's position
-        let boom = this.add.sprite(p1Character.x, p1Character.y, 'explosion').setOrigin(0, 0);
-        boom.anims.play('explode');
-        boom.on('animationcomplete', () => {
-            obstacle.reset();
-            obstacle.alpha = 1;
-            boom.destroy();
-        });
-    }
+    // characterExplode(ship) {
+    //     console.log("hello")
+    //     // temporarily hide ship
+    //     character.alpha = 0;
+    //     // create explosion sprite at ship's position
+    //     let boom = this.add.sprite(character.x, character.y, 'explosion').setOrigin(0, 0);
+    //     boom.anims.play('explode');
+    //     boom.on('animationcomplete', () => {
+    //         obstacle.reset();
+    //         obstacle.alpha = 1;
+    //         boom.destroy();
+    //     });
 //         // score add and repaint
 //         this.p1Score += obstacle.points;
 //         console.log(this.p1Score)
@@ -245,6 +254,6 @@ class Play extends Phaser.Scene {
 //                 break;
 //         }
 //     }
-    }
+}
 
 

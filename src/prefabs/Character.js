@@ -31,8 +31,8 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
             this.isJumping = true
             this.sfxRunning.pause();
             this.anims.play('jump');
-            this.body.velocity = new Phaser.Math.Vector2(0, -200)
-            this.setGravityY(200)
+            this.body.velocity = new Phaser.Math.Vector2(0, -110)
+            this.setGravityY(100)
             this.sfxJump.play();
             this.sfxVoice.play();
         }
@@ -52,20 +52,7 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
             this.anims.play('slide');
             this.setGravityY(50)
         }
-
-        if (this.checkCollision(this.p1Character, this.obstacle03)) {
-            this.anims.play('death')
-        }
-        // if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-        //     this.y      
-        // }
-
-        // // fire button
-        // if(Phaser.Input.Keyboard.JustDown(keySPACE)) {
-        //     this.isFiring = true;
-        //     this.sfxRocket.play(); // play sfx
-        // }
-
+        
         // reset on miss
         if(this.y > game.config.height*0.71) {
             this.y = game.config.height*0.71;
