@@ -6,7 +6,8 @@ class Menu extends Phaser.Scene {
     preload() {
         // load images/tile sprites
         this.load.image('title', './assets/title.png');
-        this.load.image('wall', './assets/wall.png');
+        this.load.image('background', './assets/background.png');
+        this.load.image('gear', './assets/gear.png');
         // load audio
         this.load.audio('sfx_select', './assets/blip_select12.wav');
         this.load.audio('sfx_explosion', './assets/explosion38.wav');
@@ -19,8 +20,10 @@ class Menu extends Phaser.Scene {
 
     create() {
         // this.wall = this.add.tileSprite(0, 0, 640, 480, 'wall').setOrigin(0, 0);
+        this.wall = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
         this.title = this.add.image(game.config.width/2, game.config.height/2, 'title').setOrigin(0.5, 0.5);
-        this.title.setDisplaySize(game.config.width/2, game.config.height/2)
+        this.title.setDisplaySize(game.config.width, game.config.height)
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xFFFFFF).setOrigin(0, 0);
         // menu text configuration
         let menuConfig = {
             fontFamily: 'Courier',
@@ -34,12 +37,28 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
+        let directionConfig = {
+            fontFamily: 'Arial',
+            fontSize: '20px',
+            backgroundColor: 'cyan',
+            color: 'purple',
+            align: 'right',
+            padding: {
+            top: 5,
+            bottom: 5,
+            },
+            fixedWidth: 100
+        }
+
         // define keys
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         // show menu text
         menuConfig.backgroundColor = 'cyan';
         menuConfig.color = '#000';
+        directionConfig.fixedWidth = 0
         this.add.text(game.config.width/2, game.config.height/1.4 + borderUISize + borderPadding, 'Press SPACE to start', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/3.2, game.config.height/6.5, 'Press UP key to jump', directionConfig).setOrigin(0.5);
+        this.add.text(game.config.width/1.4, game.config.height/6.5, 'Press DOWN key to slide', directionConfig).setOrigin(0.5);
         // show high score
         this.add.text(225, 420, 'BEST TIME:').setOrigin(0, 0);
         this.hiScore = this.add.text(400, 420, game.highScore);
@@ -50,7 +69,7 @@ class Menu extends Phaser.Scene {
             // easy mode
             game.settings = {
                 jumpSpeed: 5,
-                obstacleSpeed: 3,
+                obstacleSpeed: 2,
                 gameTimer: 60000
             }
             this.sound.play('sfx_select');
