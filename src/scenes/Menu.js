@@ -70,7 +70,6 @@ class Menu extends Phaser.Scene {
             game.settings = {
                 jumpSpeed: 5,
                 obstacleSpeed: 2,
-                gameTimer: 60000
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');

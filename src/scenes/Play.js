@@ -22,6 +22,9 @@ class Play extends Phaser.Scene {
         this.sfx = this.sound.add('sfx_play_music');
         this.sfx.setLoop(true);
         this.sfx.play()
+        this.deathScream = this.sound.add('sfx_death', {
+            volume: 0.5
+        });
         // background tiles
         this.wall = this.add.tileSprite(0, 0, 640, 480, 'wall').setOrigin(0, 0);
         this.floor = this.add.tileSprite(0, 0, 640, 480, 'floor').setOrigin(0, 0);
@@ -46,16 +49,34 @@ class Play extends Phaser.Scene {
         frameRate: 9,
         repeat: -1
         });
+        // slide animation
+        this.anims.create({
+            key: 'dying',
+            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 8, end: 8}),
+        frameRate: 9,
+        repeat: -1
+        });
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character').setOrigin(0.5, 0);
         // add obstacles (x3)
-        this.obstacle01 = new Obstacles(this, game.config.width+ borderUISize*10, game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
+        this.order = [game.config.width + borderUISize*20, game.config.width + borderUISize*10, game.config.width];
+        this.random = Phaser.Math.Between(0, 2);
+        this.obstacle01 = new Obstacles(this, this.order[this.random], game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
         this.obstacle01.moveSpeed = game.settings.obstacleSpeed
-        this.obstacle02 = new Obstacles(this, game.config.width + borderUISize*5, game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
+        delete this.order[this.random]
+        do {
+            this.random = Phaser.Math.Between(0, 2)
+        } while (this.order[this.random] !== undefined);
+        this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
         this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
         this.obstacle02.moveSpeed = game.settings.obstacleSpeed
-        this.obstacle03 = new Obstacles(this, game.config.width, game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
+        delete this.order[this.random]
+        do {
+            this.random = Phaser.Math.Between(0, 2)
+        } while (this.order[this.random] !== undefined);
+        this.obstacle03 = new Obstacles(this, this.order[this.random], game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
         this.obstacle03.moveSpeed = game.settings.obstacleSpeed
+        delete this.order[this.random]
         // speed increase after 30 seconds
         // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -67,6 +88,7 @@ class Play extends Phaser.Scene {
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         // animation config
         this.anims.create({
             key: 'explode',
@@ -82,7 +104,7 @@ class Play extends Phaser.Scene {
         this.p1Score = 0;
 
         // display score
-        let scoreConfig = {
+        this.scoreConfig = {
             fontFamily: 'Arial',
             fontSize: '20px',
             backgroundColor: 'cyan',
@@ -100,13 +122,7 @@ class Play extends Phaser.Scene {
         this.gameOver = false;
         
         // 60-second play clock
-        scoreConfig.fixedWidth = 0
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
-        console.log(this.clock.elapsed);
+        this.scoreConfig.fixedWidth = 0
 
         // display timer
         let timeConfig = {
@@ -121,11 +137,11 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.elapsed, timeConfig);
+        // this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.elapsed, timeConfig);
 
         // how to play
-        this.add.text(game.config.width/2.4, game.config.height/6.5, 'Press UP key to jump', scoreConfig).setOrigin(0.5);
-        this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN ket to slide', scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2.4, game.config.height/6.5, 'Press UP key to jump', this.scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN ket to slide', this.scoreConfig).setOrigin(0.5);
         
         // high score display
         // this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
@@ -154,7 +170,7 @@ class Play extends Phaser.Scene {
         this.floor.tilePositionX += 4;
 
         // clock update
-        this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
+        // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
         if(!this.gameOver) {
             this.p1Character.update();
@@ -167,19 +183,19 @@ class Play extends Phaser.Scene {
             // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle03);
-            this.gameOver = true;
+            this.death()
         }
         if (this.checkCollision(this.p1Character, this.obstacle02)) {
             // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle02);
-            this.gameOver = true;
+            this.death()
         }
         if (this.checkCollision(this.p1Character, this.obstacle01)) {
             // this.audio.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle01);
-            this.gameOver = true;
+            this.death()
         }
 
         // highScore
@@ -187,6 +203,16 @@ class Play extends Phaser.Scene {
         //     game.highScore = this.p1Score
         //     this.hiScore.text = game.highScore
         // }
+    }
+
+    death() {
+        this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', this.scoreConfig).setOrigin(0.5);
+        this.gameOver = true;
+        this.p1Character.anims.play('dying');
+        this.deathScream.play();
+        this.p1Character.setGravityY(0)
+        this.p1Character.body.velocity = new Phaser.Math.Vector2(0, 0)
     }
 
     checkCollision(p1Character, obstacle03) {
