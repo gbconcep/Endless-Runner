@@ -17,7 +17,11 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
         this.setGravityY(50);
         this.sfxJump = scene.sound.add('sfx_jump');
         this.sfxVoice = scene.sound.add('sfx_voice');
+        this.sfxRunning = scene.sound.add('sfx_running');
         this.anims.play('running');
+        this.sfxRunning.play();
+        this.sfxRunning.setLoop(true);
+        this.sfxRunning.play()
     }
     
     update() {   
@@ -25,9 +29,10 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
         if(Phaser.Input.Keyboard.JustDown(keyUP)) {
             //this.y -= 50;
             this.isJumping = true
+            this.sfxRunning.pause();
             this.anims.play('jump');
-            this.body.velocity = new Phaser.Math.Vector2(0, -80)
-            this.setGravityY(50)
+            this.body.velocity = new Phaser.Math.Vector2(0, -200)
+            this.setGravityY(200)
             this.sfxJump.play();
             this.sfxVoice.play();
         }
@@ -38,6 +43,7 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
 
         if (this.y == [game.config.height*0.71]) {
             this.anims.play('running');
+            this.sfxRunning.play()
  }
 
         // slide button
@@ -45,6 +51,10 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
             // && this.y == [game.config.height*0.71]
             this.anims.play('slide');
             this.setGravityY(50)
+        }
+
+        if (this.checkCollision(this.p1Character, this.obstacle03)) {
+            this.anims.play('death')
         }
         // if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
         //     this.y      
@@ -64,7 +74,7 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
 
     // reset rocket to "ground"
     reset() {
-        this.isFiring = false;
+        this.isJumping = false;
         this.x = game.config.height - borderUISize - borderPadding;
     }
 }
