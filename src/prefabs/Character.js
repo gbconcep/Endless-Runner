@@ -50,6 +50,7 @@ class Character extends Phaser.Physics.Arcade.Sprite  {
         if(Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             // && this.y == [game.config.height*0.71]
             this.anims.play('slide');
+            this.sfxRunning.stop();
             this.setGravityY(50)
         }
         

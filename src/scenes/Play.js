@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         // load images/tile sprites
         this.load.image('rocket', './assets/rocket.png');
-        this.load.image('block', './assets/block.png');
+        this.load.image('spikes', './assets/spikes.png');
         this.load.image('box', './assets/box.png');
         this.load.image('wall', './assets/wall.png');
         this.load.image('particle', './assets/explosion.png');
@@ -45,15 +45,15 @@ class Play extends Phaser.Scene {
         // slide animation
         this.anims.create({
             key: 'slide',
-            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 10, end: 10}),
+            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 10, end: 10,}),
         frameRate: 9,
         repeat: -1
         });
         // slide animation
         this.anims.create({
             key: 'dying',
-            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 8, end: 8}),
-        frameRate: 9,
+            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 9, end: 9}),
+        frameRate: 3,
         repeat: -1
         });
         // character
@@ -67,7 +67,7 @@ class Play extends Phaser.Scene {
         do {
             this.random = Phaser.Math.Between(0, 2)
         } while (this.order[this.random] !== undefined);
-        this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'block', 0, 25).setOrigin(0,0);
+        this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'spikes', 0, 25).setOrigin(0,0);
         this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
         this.obstacle02.moveSpeed = game.settings.obstacleSpeed
         delete this.order[this.random]
@@ -160,14 +160,18 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.scene.restart();
             console.log('reset')
+            this.sfx.stop()
             this.sfx.play()
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
-            this.sfx.pause()
+            this.sfx.stop()
         }
+
+        if (this.gameOver == false) {
         this.wall.tilePositionX += 4;
         this.floor.tilePositionX += 4;
+        }
 
         // clock update
         // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
@@ -180,19 +184,19 @@ class Play extends Phaser.Scene {
         }
         // check collisions
         if(this.checkCollision(this.p1Character, this.obstacle03)) {
-            // this.audio.play('sfx_death');
+            this.sound.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle03);
             this.death()
         }
         if (this.checkCollision(this.p1Character, this.obstacle02)) {
-            // this.audio.play('sfx_death');
+            this.sound.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle02);
             this.death()
         }
         if (this.checkCollision(this.p1Character, this.obstacle01)) {
-            // this.audio.play('sfx_death');
+            this.sound.play('sfx_death');
             // this.p1Character.reset();
             // this.characterExplode(this.obstacle01);
             this.death()
@@ -209,10 +213,12 @@ class Play extends Phaser.Scene {
         this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', this.scoreConfig).setOrigin(0.5);
         this.gameOver = true;
+        this.p1Character.sfxRunning.stop();
         this.p1Character.anims.play('dying');
-        this.deathScream.play();
         this.p1Character.setGravityY(0)
         this.p1Character.body.velocity = new Phaser.Math.Vector2(0, 0)
+        // this.p1CHaracter.sfxRunning.pause();
+        // this.deathScream.play();
     }
 
     checkCollision(p1Character, obstacle03) {
@@ -242,18 +248,19 @@ class Play extends Phaser.Scene {
         }
     }
     
-    // characterExplode(ship) {
-    //     console.log("hello")
-    //     // temporarily hide ship
-    //     character.alpha = 0;
-    //     // create explosion sprite at ship's position
-    //     let boom = this.add.sprite(character.x, character.y, 'explosion').setOrigin(0, 0);
-    //     boom.anims.play('explode');
-    //     boom.on('animationcomplete', () => {
-    //         obstacle.reset();
-    //         obstacle.alpha = 1;
-    //         boom.destroy();
-    //     });
+    characterExplode(obstacle03) {
+        console.log("hello")
+        // temporarily hide ship
+        p1Character.alpha = 0;
+        // create explosion sprite at ship's position
+        let boom = this.add.sprite(p1Character.x, p1Character.y, 'explosion').setOrigin(0, 0);
+        boom.anims.play('explode');
+        boom.on('animationcomplete', () => {
+            obstacle03.reset();
+            obstacle3.alpha = 1;
+            boom.destroy();
+        });
+    }
 //         // score add and repaint
 //         this.p1Score += obstacle.points;
 //         console.log(this.p1Score)

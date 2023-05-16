@@ -1,6 +1,6 @@
 /* Name:Gavin Concepcion
  Mod Title: Cyber Dash
-Approx. Hours Spent: 13 (subject to change)
+Approx. Hours Spent: 14 (subject to change)
 Physics Source: https://stackoverflow.com/questions/55302007/how-add-physics-to-phaser-3-sprite
 Gravity: https://phasergames.com/using-gravity-in-phaser-3/
 https://newdocs.phaser.io/docs/3.54.0/Phaser.GameObjects.Components.Size#setSize
