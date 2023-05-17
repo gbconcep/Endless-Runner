@@ -74,9 +74,13 @@ class Menu extends Phaser.Scene {
             this.sound.play('sfx_select');
             this.scene.start('playScene');
         }
-        if (game.highScore <= this.p1Score) {
-            game.highScore = this.p1Score
-            this.hiScore.text = game.highScore
+        // if (game.highScore <= this.p1Score) {
+        //     game.highScore = this.p1Score
+        //     this.hiScore.text = game.highScore
+        // }
+        if (game.bestTime && game.bestTime > this.bestTime) {
+            this.bestTime = game.bestTime;
+            this.bestTimeText.text = this.formatTime(this.bestTime);
         }
     }
 }

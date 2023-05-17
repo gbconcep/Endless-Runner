@@ -125,9 +125,6 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
 
-        // initiate score
-        this.p1Score = 0;
-
         // display score
         this.scoreConfig = {
             fontFamily: 'Arial',
@@ -165,58 +162,31 @@ class Play extends Phaser.Scene {
       
       this.startTime = this.time.now; 
       
-      this.timerText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, 'Time: 0.00', timeConfig);
-      
-      
+      this.timerText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, '0.00', timeConfig);
 
         // how to play
         this.add.text(game.config.width/2.4, game.config.height/6.5, 'Press UP key to jump', this.scoreConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN key to slide', this.scoreConfig).setOrigin(0.5);
-        
-        // high score display
-        // this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
-        // this.hiScore = this.add.text(400, 420, game.highScore);
-        // let spikesGroup;
-        // spikesGroup = this.physics.add.group();
+
+        // Initialize variables
+        this.currentTime = 0; // Track the current time
+        this.bestTime = game.bestTime || 0; // Load the best time from game or set to 0
+
+        // ...
+
+        // Display the best time
+        this.bestTimeText = this.add.text(250, 420, `BEST TIME: ${this.formatTime(this.bestTime)}`, {
+            fontFamily: 'Courier',
+            fontSize: '20px',
+            color: '#ffffff'
+        });
     }
 
-    update() {
-        // this.p1Character.update();
-        // slide button
-    //     if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-    //       if (!this.p1Character.isJumping) {
-    //         this.p1Character.slide();
-    //         this.p1Character = this, game.config.width/6, game.config.height*0.81, 'character', 0;
-    //         // Rest of the code...
-        
-    //         // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
-    //         this.physics.world.colliders.getActive().forEach((collider) => {
-    //             const isSpikeCollision =
-    //                 (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-    //                 (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject));
-        
-    //             const isRocketCollision =
-    //                 (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-    //                 (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject));
-        
-    //             if (isSpikeCollision || isRocketCollision) {
-    //                 collider.active = false;
-    //             }
-    //         });
-        
-    //         // Move the character sprite back to its original position during the slide
-    //         this.p1Character.setOrigin(0.5, 1); // Adjust the origin as per your sprite
-    //     }
-    //   }
-      
-    //   if (this.p1Character.isSliding) {
-    //     this.p1Character.setOrigin(0.5, 0.5); // Reset the origin to its default position
-    // }          
-
-        this.time.delayedCall(30000, () => {
+    update() {     
+        this.time.delayedCall(15000, () => {
             console.log('call')
             this.obstacles.forEach((obstacle) => {
-                obstacle.moveSpeed *= 2;
+                obstacle.moveSpeed *= 1.001;
               });
             // this.obstacle01.moveSpeed*2
             // this.obstacle02.moveSpeed*2
@@ -224,20 +194,18 @@ class Play extends Phaser.Scene {
         })
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
-            this.scene.restart();
-            console.log('reset')
-            this.sfx.stop()
+            this.restart();
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
             this.sfx.stop()
         }
 
-
         // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
         if (!this.gameOver) {
           let elapsedSeconds = (this.time.now - this.startTime) / 1000; 
+          this.currentTime = elapsedSeconds;
           this.timerText.text = elapsedSeconds.toFixed(2);
           this.wall.tilePositionX += 4;
           this.floor.tilePositionX += 4;
@@ -250,7 +218,24 @@ class Play extends Phaser.Scene {
             }
           });
         }
+
+        // Update the best time if the current time is greater than the previous best time
+        if (this.currentTime > this.bestTime) {
+          this.bestTime = this.currentTime;
+          this.bestTimeText.setText(`BEST TIME: ${this.formatTime(this.bestTime)}`);
+          game.bestTime = this.bestTime; // Store the best time in game for persistence
+      }
+      
     }
+
+    restart() {
+      this.scene.restart();
+      console.log('reset');
+      this.sfx.stop();
+      this.startTime = this.time.now; // Reset the start time
+      this.currentTime = 0; // Reset the current time
+      this.timerText.text = 'Time: 0.00'; // Update the timer display
+  }
 
     death() {
         this.p1Character.sfxRunning.stop();
@@ -260,7 +245,6 @@ class Play extends Phaser.Scene {
         this.p1Character.setGravityY(0);
         this.p1Character.body.velocity = new Phaser.Math.Vector2(0, 0);
     }
-    
 
     menuScreen() {
         this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
@@ -273,11 +257,15 @@ class Play extends Phaser.Scene {
       if (p1Character.isSliding && (obstacle.texture.key === 'spikes' || obstacle.texture.key === 'rocket')) {
         return false;
       }
+      
+      // Adjust the additionalWidth value to change the hitbox size
+      const additionalWidthLeft = 35; // No change on the left side
+      const additionalWidthRight = 0; // Decrease the hitbox width on the right side
     
-      // Simple AABB checking
+      // Collision detection code
       if (
-        p1Character.x < obstacle.x + obstacle.width &&
-        p1Character.x + p1Character.width > obstacle.x &&
+        p1Character.x < obstacle.x + obstacle.width + additionalWidthRight &&
+        p1Character.x + p1Character.width > obstacle.x + additionalWidthLeft &&
         p1Character.y < obstacle.y + obstacle.height &&
         p1Character.y + p1Character.height > obstacle.y
       ) {
@@ -287,7 +275,14 @@ class Play extends Phaser.Scene {
         return false;
       }
     }
-    
+
+    formatTime(time) {
+      // Helper function to format the time as MM:SS
+      const minutes = Math.floor(time / 60);
+      const seconds = Math.floor(time % 60);
+      const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      return formattedTime;
+  }
     
     characterExplode(obstacle) {
         console.log("hello")

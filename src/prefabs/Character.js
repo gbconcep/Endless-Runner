@@ -26,16 +26,19 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     update() {
       // jump button
       if (Phaser.Input.Keyboard.JustDown(keyUP)) {
-        if (!this.isJumping && !this.isSliding && this.canJump) {
+        if (!this.isJumping && this.canJump) {
           this.jump();
-        }
+        // } else if (this.isSliding) {
+        //   this.cancelSlide();
+        //   this.jump();
       }
-  
+    }
+    
       // Check if character has landed on the "floor"
       if (!this.isJumping && !this.isSliding && this.body.velocity.y >= 0 && this.body.y >= game.config.height * 0.71) {
         this.land();
       }
-  
+    
       // slide button
       if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
         if (!this.isJumping && this.canSlide) {
@@ -44,10 +47,10 @@ class Character extends Phaser.Physics.Arcade.Sprite {
           this.scene.time.delayedCall(1300, this.stopSlide, [], this);
         }
       }
-  
+    
       // Ensure character stays within the height limit
       this.enforceHeightLimit();
-  
+    
       if (this.isJumping) {
         this.anims.play('jump');
       } else if (this.isSliding) {
@@ -56,7 +59,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('running', true);
         this.sfxRunning.play();
       }
-    }
+    }    
   
     enforceHeightLimit() {
       const targetY = game.config.height * 0.71;
@@ -75,7 +78,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       this.setGravityY(800);
       this.sfxJump.play();
       this.sfxVoice.play();
-      this.body.velocity.y = -450; // Adjust the jump velocity as needed
+      this.body.velocity.y = -450; 
       this.body.allowGravity = true;
       this.canJump = false;
     }
@@ -88,6 +91,19 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       this.canSlide = false;
       this.scene.ignoreCollision = true;
     }
+
+    // cancelSlide() {
+    //   this.isSliding = false;
+    //   this.anims.stop('slide', true);
+    //   this.canSlide = true;
+    //   this.scene.ignoreCollision = false;
+    
+    //   // Reset gravity settings
+    //   if (!this.isJumping) {
+    //     this.setGravityY(800);
+    //     this.body.allowGravity = false;
+    //   }
+    // }    
   
     stopSlide() {
       this.isSliding = false;
@@ -96,7 +112,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
       this.canSlide = true;
       this.scene.ignoreCollision = false;
     }
-      
+
     handleCollision() {
         if (!this.isJumping && this.body.velocity.y >= 0 && !this.isSliding) {
           this.land();
