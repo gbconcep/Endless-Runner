@@ -21,7 +21,7 @@ class Play extends Phaser.Scene {
     create() {
         this.sfx = this.sound.add('sfx_play_music');
         this.sfx.setLoop(true);
-        this.sfx.play()
+        // this.sfx.play()
         this.deathScream = this.sound.add('sfx_death', {
             volume: 0.5
         });
@@ -94,9 +94,9 @@ class Play extends Phaser.Scene {
         function getObstacleYPosition(obstacleType) {
         switch (obstacleType) {
             case 'rocket':
-            return this.game.config.height * 0.72;
+            return this.game.config.height * 0.71;
             case 'spikes':
-            return this.game.config.height * 0.03;
+            return this.game.config.height * 0.01;
             case 'box':
             return this.game.config.height * 0.73;
             default:
