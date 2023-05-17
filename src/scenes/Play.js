@@ -151,18 +151,23 @@ class Play extends Phaser.Scene {
 
         // display timer
         let timeConfig = {
-            fontFamily: 'Arial',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
-            padding: {
-            top: 5,
-            bottom: 5,
-            },
-            fixedWidth: 100
-        }
-        // this.timeRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.clock.elapsed, timeConfig);
+          fontFamily: 'Arial',
+          fontSize: '28px',
+          backgroundColor: '#F3B141',
+          color: '#843605',
+          align: 'right',
+          padding: {
+              top: 5,
+              bottom: 5,
+          },
+          fixedWidth: 100
+      };
+      
+      this.startTime = this.time.now; // Store the starting time
+      
+      this.timerText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, 'Time: 0.00', timeConfig);
+      
+      
 
         // how to play
         this.add.text(game.config.width/2.4, game.config.height/6.5, 'Press UP key to jump', this.scoreConfig).setOrigin(0.5);
@@ -225,6 +230,11 @@ class Play extends Phaser.Scene {
         }
 
         // clock update
+        let elapsedSeconds = (this.time.now - this.startTime) / 1000; // Calculate the elapsed time in seconds
+
+        this.timerText.text = elapsedSeconds.toFixed(2);
+
+
         // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
         if (!this.gameOver) {

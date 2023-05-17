@@ -4,8 +4,8 @@ class Obstacles extends Phaser.Physics.Arcade.Sprite {
       super(scene, x, y, texture, frame);
       scene.add.existing(this);
       scene.physics.add.existing(this);
-      this.body.setSize(this.width * 0.5, this.height, true); // Adjust the x-axis hitbox size as needed
-      this.body.setOffset(this.width * 0.10, 0); // Adjust the x-axis hitbox offset as needed
+      this.body.setSize(this.width * 0.4, this.height, true);
+      this.body.setOffset(this.width * 0.20, 0);
       this.moveSpeed = 0;
       this.pointValue = pointValue;
     }
