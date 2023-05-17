@@ -108,7 +108,7 @@ class Play extends Phaser.Scene {
         return Phaser.Math.Between(0, 50);
         }
         // border
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FFFF).setOrigin(0, 0);
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.width - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
@@ -176,33 +176,42 @@ class Play extends Phaser.Scene {
         // high score display
         // this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
         // this.hiScore = this.add.text(400, 420, game.highScore);
+        // let spikesGroup;
+        // spikesGroup = this.physics.add.group();
     }
 
     update() {
         // this.p1Character.update();
         // slide button
-        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-            if (!this.p1Character.isJumping) {
-              this.p1Character.slide();
-              // Set a timer to stop the slide animation after 1 second
-              this.time.delayedCall(1000, this.p1Character.stopSlide, [], this.p1Character);
-          
-              // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
-              this.physics.world.colliders.getActive().forEach((collider) => {
-                const isSpikeCollision =
-                  (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-                  (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject));
-          
-                const isRocketCollision =
-                  (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-                  (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject));
-          
-                if (isSpikeCollision || isRocketCollision) {
-                  collider.active = false;
-                }
-              });
-            }
-          }
+    //     if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+    //       if (!this.p1Character.isJumping) {
+    //         this.p1Character.slide();
+    //         this.p1Character = this, game.config.width/6, game.config.height*0.81, 'character', 0;
+    //         // Rest of the code...
+        
+    //         // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
+    //         this.physics.world.colliders.getActive().forEach((collider) => {
+    //             const isSpikeCollision =
+    //                 (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+    //                 (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject));
+        
+    //             const isRocketCollision =
+    //                 (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+    //                 (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject));
+        
+    //             if (isSpikeCollision || isRocketCollision) {
+    //                 collider.active = false;
+    //             }
+    //         });
+        
+    //         // Move the character sprite back to its original position during the slide
+    //         this.p1Character.setOrigin(0.5, 1); // Adjust the origin as per your sprite
+    //     }
+    //   }
+      
+    //   if (this.p1Character.isSliding) {
+    //     this.p1Character.setOrigin(0.5, 0.5); // Reset the origin to its default position
+    // }          
 
         this.time.delayedCall(30000, () => {
             console.log('call')
@@ -224,29 +233,23 @@ class Play extends Phaser.Scene {
             this.sfx.stop()
         }
 
-        if (this.gameOver == false) {
-        this.wall.tilePositionX += 4;
-        this.floor.tilePositionX += 4;
-        }
-
-        // clock update
-        let elapsedSeconds = (this.time.now - this.startTime) / 1000; 
-
-        this.timerText.text = elapsedSeconds.toFixed(2);
-
 
         // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
         if (!this.gameOver) {
-            this.p1Character.update();
-            this.obstacles.forEach((obstacle) => {
-              obstacle.update();
-              if (this.checkCollision(this.p1Character, obstacle)) {
-                this.death()
-                this.menuScreen()
-              }
-            });
-          }
+          let elapsedSeconds = (this.time.now - this.startTime) / 1000; 
+          this.timerText.text = elapsedSeconds.toFixed(2);
+          this.wall.tilePositionX += 4;
+          this.floor.tilePositionX += 4;
+          this.p1Character.update();
+          this.obstacles.forEach((obstacle) => {
+            obstacle.update();
+            if (this.checkCollision(this.p1Character, obstacle)) {
+              this.death()
+              this.menuScreen()
+            }
+          });
+        }
     }
 
     death() {
@@ -266,19 +269,25 @@ class Play extends Phaser.Scene {
     }
 
     checkCollision(p1Character, obstacle) {
-        // Simple AABB checking
-        if (
-            p1Character.x < obstacle.x + obstacle.width &&
-            p1Character.x + p1Character.width > obstacle.x &&
-            p1Character.y < obstacle.y + obstacle.height &&
-            p1Character.y + p1Character.height > obstacle.y
-          ) {
-            // Collision detected
-            return true;
-        } else {
-          return false;
-        }
+      // Ignore collision with spikes and rockets during slide animation
+      if (p1Character.isSliding && (obstacle.texture.key === 'spikes' || obstacle.texture.key === 'rocket')) {
+        return false;
       }
+    
+      // Simple AABB checking
+      if (
+        p1Character.x < obstacle.x + obstacle.width &&
+        p1Character.x + p1Character.width > obstacle.x &&
+        p1Character.y < obstacle.y + obstacle.height &&
+        p1Character.y + p1Character.height > obstacle.y
+      ) {
+        // Collision detected
+        return true;
+      } else {
+        return false;
+      }
+    }
+    
     
     characterExplode(obstacle) {
         console.log("hello")

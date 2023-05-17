@@ -41,7 +41,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         if (!this.isJumping && this.canSlide) {
           this.slide();
           // Set a timer to stop the slide animation after 1 second
-          this.scene.time.delayedCall(1000, this.stopSlide, [], this);
+          this.scene.time.delayedCall(1300, this.stopSlide, [], this);
         }
       }
   
