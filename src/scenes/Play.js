@@ -57,26 +57,88 @@ class Play extends Phaser.Scene {
         repeat: -1
         });
         // character
-        this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character').setOrigin(0.5, 0);
+        this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character', 0, this.time).setOrigin(0.5, 0); 
         // add obstacles (x3)
-        this.order = [game.config.width + borderUISize*20, game.config.width + borderUISize*10, game.config.width];
-        this.random = Phaser.Math.Between(0, 2);
-        this.obstacle01 = new Obstacles(this, this.order[this.random], game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
-        this.obstacle01.moveSpeed = game.settings.obstacleSpeed
-        delete this.order[this.random]
-        do {
-            this.random = Phaser.Math.Between(0, 2)
-        } while (this.order[this.random] !== undefined);
-        this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'spikes', 0, 25).setOrigin(0,0);
-        this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
-        this.obstacle02.moveSpeed = game.settings.obstacleSpeed
-        delete this.order[this.random]
-        do {
-            this.random = Phaser.Math.Between(0, 2)
-        } while (this.order[this.random] !== undefined);
-        this.obstacle03 = new Obstacles(this, this.order[this.random], game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
-        this.obstacle03.moveSpeed = game.settings.obstacleSpeed
-        delete this.order[this.random]
+        this.physics.add.collider(this.p1Character, this.floor);
+        // Define constants for obstacle spacing and movement speed
+        this.obstacleSpacing = game.config.width / 3; // Adjust as needed
+        this.obstacleMoveSpeed = game.settings.obstacleSpeed; // Adjust as needed
+
+        // Create an array of obstacle types
+        this.obstacleTypes = ['rocket', 'spikes', 'box'];
+
+        // Shuffle the obstacle types array randomly
+        Phaser.Utils.Array.Shuffle(this.obstacleTypes);
+
+        // Calculate initial x-coordinate positions for obstacles
+        this.obstacleXPositions = [
+        game.config.width + this.obstacleSpacing * 2,
+        game.config.width + this.obstacleSpacing,
+        game.config.width
+        ];
+
+        // Create an array to store the obstacle instances
+        this.obstacles = [];
+
+        // Create and position the obstacles
+        for (let i = 0; i < this.obstacleTypes.length; i++) {
+        const obstacleYPosition = getObstacleYPosition.call(this, this.obstacleTypes[i]);
+
+        const obstacle = new Obstacles(
+            this,
+            this.obstacleXPositions[i],
+            obstacleYPosition,
+            this.obstacleTypes[i],
+            0,
+            getRandomPointValue.call(this)
+        ).setOrigin(0, 0);
+        obstacle.moveSpeed = this.obstacleMoveSpeed;
+        this.obstacles.push(obstacle);
+        }
+
+        // Helper function to get a random Y position for obstacles
+        function getRandomYPosition() {
+        // Adjust the range of Y positions based on your requirements
+        return Phaser.Math.Between(game.config.height * 0.2, game.config.height * 0.8);
+        }
+
+        // Helper function to get the Y position for specific obstacle types
+        function getObstacleYPosition(obstacleType) {
+        switch (obstacleType) {
+            case 'rocket':
+            return this.game.config.height * 0.72;
+            case 'spikes':
+            return this.game.config.height * 0.25;
+            case 'box':
+            return this.game.config.height * 0.73;
+            default:
+            return 0;
+        }
+        }
+
+        // Helper function to get a random point value for obstacles
+        function getRandomPointValue() {
+        // Adjust the range of point values based on your requirements
+        return Phaser.Math.Between(0, 50);
+        }
+        // this.order = [game.config.width + borderUISize*20, game.config.width + borderUISize*10, game.config.width];
+        // this.random = Phaser.Math.Between(0, 2);
+        // this.obstacle01 = new Obstacles(this, this.order[this.random], game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
+        // this.obstacle01.moveSpeed = game.settings.obstacleSpeed
+        // delete this.order[this.random]
+        // do {
+        //     this.random = Phaser.Math.Between(0, 2)
+        // } while (this.order[this.random] !== undefined);
+        // this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'spikes', 0, 25).setOrigin(0,0);
+        // this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
+        // this.obstacle02.moveSpeed = game.settings.obstacleSpeed
+        // delete this.order[this.random]
+        // do {
+        //     this.random = Phaser.Math.Between(0, 2)
+        // } while (this.order[this.random] !== undefined);
+        // this.obstacle03 = new Obstacles(this, this.order[this.random], game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
+        // this.obstacle03.moveSpeed = game.settings.obstacleSpeed
+        // delete this.order[this.random]
         // speed increase after 30 seconds
         // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
@@ -150,18 +212,40 @@ class Play extends Phaser.Scene {
 
 
     update() {
+        this.p1Character.update();
+        // slide button
+        if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
+            if (!this.p1Character.isJumping) {
+                this.p1Character.slide();
+                // Set a timer to stop the slide animation after 1 second
+                this.time.delayedCall(1000, this.p1Character.stopSlide, [], this.p1Character);
+        
+                // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
+                this.physics.world.colliders.getActive().forEach((collider) => {
+                    if (
+                        (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+                        (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject)) ||
+                        (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+                        (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject))
+                    ) {
+                        collider.active = false;
+                    }
+                });
+            }
+        }
+
         this.time.delayedCall(30000, () => {
             console.log('call')
-            this.obstacle01.moveSpeed*2
-            this.obstacle02.moveSpeed*2
-            this.obstacle03.moveSpeed*2
+            this.obstacle.moveSpeed*2
+            // this.obstacle01.moveSpeed*2
+            // this.obstacle02.moveSpeed*2
+            // this.obstacle03.moveSpeed*2
         })
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.scene.restart();
             console.log('reset')
             this.sfx.stop()
-            this.sfx.play()
         }
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
@@ -176,31 +260,44 @@ class Play extends Phaser.Scene {
         // clock update
         // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
-        if(!this.gameOver) {
+        if (!this.gameOver) {
             this.p1Character.update();
-            this.obstacle01.update(); 
-            this.obstacle02.update();
-            this.obstacle03.update();
-        }
+            this.obstacles.forEach((obstacle) => {
+              obstacle.update();
+              if (this.checkCollision(this.p1Character, obstacle)) {
+                this.death()
+                // Handle collision
+              }
+            });
+          }
+
+        // if(!this.gameOver) {
+        //     this.p1Character.update();
+        //     this.obstacle.update(); 
+        //     // this.obstacle01.update(); 
+        //     // this.obstacle02.update();
+        //     // this.obstacle03.update();
+        // }
         // check collisions
-        if(this.checkCollision(this.p1Character, this.obstacle03)) {
-            this.sound.play('sfx_death');
-            // this.p1Character.reset();
-            // this.characterExplode(this.obstacle03);
-            this.death()
-        }
-        if (this.checkCollision(this.p1Character, this.obstacle02)) {
-            this.sound.play('sfx_death');
-            // this.p1Character.reset();
-            // this.characterExplode(this.obstacle02);
-            this.death()
-        }
-        if (this.checkCollision(this.p1Character, this.obstacle01)) {
-            this.sound.play('sfx_death');
-            // this.p1Character.reset();
-            // this.characterExplode(this.obstacle01);
-            this.death()
-        }
+        // if(this.checkCollision(this.p1Character, this.obstacle)) {
+        //     // 03 || this.obstacle02 || this.obstacle01
+        //     this.sound.play('sfx_death');
+        //     // this.p1Character.reset();
+        //     // this.characterExplode(this.obstacle03);
+        //     this.death()
+        // }
+        // if (this.checkCollision(this.p1Character, this.obstacle02)) {
+        //     // this.sound.play('sfx_death');
+        //     // this.p1Character.reset();
+        //     // this.characterExplode(this.obstacle02);
+        //     this.death()
+        // }
+        // if (this.checkCollision(this.p1Character, this.obstacle01)) {
+        //     // this.sound.play('sfx_death');
+        //     // this.p1Character.reset();
+        //     // this.characterExplode(this.obstacle01);
+        //     this.death()
+        // }
 
         // highScore
         // if (game.highScore <= this.p1Score) {
@@ -221,34 +318,49 @@ class Play extends Phaser.Scene {
         // this.deathScream.play();
     }
 
-    checkCollision(p1Character, obstacle03) {
-        // simple AABB checking
-        if (p1Character.x < obstacle03.x + obstacle03.width && p1Character.x + p1Character.width > obstacle03.x && p1Character.y < obstacle03.y + obstacle03.height && p1Character.height + p1Character.y > obstacle03.y) {
+    checkCollision(p1Character, obstacle) {
+        // Simple AABB checking
+        if (
+          p1Character.x < obstacle.x + obstacle.width &&
+          p1Character.x + p1Character.width > obstacle.x &&
+          p1Character.y < obstacle.y + obstacle.height &&
+          p1Character.y + p1Character.height > obstacle.y
+        ) {
           return true;
         } else {
           return false;
         }
-    }
+      }
 
-    checkCollision(p1Character, obstacle02) {
-        // simple AABB checking
-        if (p1Character.x < obstacle02.x + obstacle02.width && p1Character.x + p1Character.width > obstacle02.x && p1Character.y < obstacle02.y + obstacle02.height && p1Character.height + p1Character.y > obstacle02.y) {
-          return true;
-        } else {
-          return false;
-        }
-    }
 
-    checkCollision(p1Character, obstacle01) {
-        // simple AABB checking
-        if (p1Character.x < obstacle01.x + obstacle01.width && p1Character.x + p1Character.width > obstacle01.x && p1Character.y < obstacle01.y + obstacle01.height && p1Character.height + p1Character.y > obstacle01.y) {
-          return true;
-        } else {
-          return false;
-        }
-    }
+    // checkCollision(p1Character, obstacle03) {
+    //     // simple AABB checking
+    //     if (p1Character.x < obstacle03.x + obstacle03.width && p1Character.x + p1Character.width > obstacle03.x && p1Character.y < obstacle03.y + obstacle03.height && p1Character.height + p1Character.y > obstacle03.y) {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    // }
+
+    // checkCollision(p1Character, obstacle02) {
+    //     // simple AABB checking
+    //     if (p1Character.x < obstacle02.x + obstacle02.width && p1Character.x + p1Character.width > obstacle02.x && p1Character.y < obstacle02.y + obstacle02.height && p1Character.height + p1Character.y > obstacle02.y) {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    // }
+
+    // checkCollision(p1Character, obstacle01) {
+    //     // simple AABB checking
+    //     if (p1Character.x < obstacle01.x + obstacle01.width && p1Character.x + p1Character.width > obstacle01.x && p1Character.y < obstacle01.y + obstacle01.height && p1Character.height + p1Character.y > obstacle01.y) {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    // }
     
-    characterExplode(obstacle03) {
+    characterExplode(obstacle) {
         console.log("hello")
         // temporarily hide ship
         p1Character.alpha = 0;
@@ -256,8 +368,8 @@ class Play extends Phaser.Scene {
         let boom = this.add.sprite(p1Character.x, p1Character.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');
         boom.on('animationcomplete', () => {
-            obstacle03.reset();
-            obstacle3.alpha = 1;
+            obstacle.reset();
+            obstacle.alpha = 1;
             boom.destroy();
         });
     }
