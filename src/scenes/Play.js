@@ -63,57 +63,69 @@ class Play extends Phaser.Scene {
       this.p1Character.body.debugShowVelocity = false; 
       this.add.existing(this.p1Character);
 
-      // obstacles
-      this.obstacleSpacing = game.config.width / 3;
-      this.obstacleMoveSpeed = game.settings.obstacleSpeed;
-      this.obstacleTypes = ['rocket', 'spikes', 'box'];
-      Phaser.Utils.Array.Shuffle(this.obstacleTypes);
-      this.obstacleXPositions = [game.config.width];
-      this.obstacles = [];
+        // obstacles
+        this.obstacleSpacing = game.config.width / 3; 
+        this.obstacleMoveSpeed = game.settings.obstacleSpeed;
+        this.obstacleTypes = ['rocket', 'spikes', 'box'];
+        Phaser.Utils.Array.Shuffle(this.obstacleTypes);
+        this.obstacleXPositions = [
+        game.config.width + 400,
+        game.config.width + 200,
+        game.config.width
+        ];
+        this.obstacles = [];
 
-      // Function to get the Y position for a given obstacle type
-      function getObstacleYPosition(obstacleType) {
-        switch (obstacleType) {
-          case 'rocket':
-            return game.config.height * 0.71;
-          case 'spikes':
-            return game.config.height * 0.01;
-          case 'box':
-            return game.config.height * 0.73;
-          default:
-            return 0;
-        }
-      }
-
-      // Function to create a new random obstacle
-      function createRandomObstacle() {
-        const randomIndex = Math.floor(Math.random() * this.obstacleTypes.length);
-        const obstacleType = this.obstacleTypes[randomIndex];
-        const obstacleYPosition = getObstacleYPosition(obstacleType);
-        const obstacleXPosition = game.config.width + 400; // Adjust the starting position as needed
+        for (let i = 0; i < this.obstacleTypes.length; i++) {
+        const obstacleYPosition = getObstacleYPosition.call(this, this.obstacleTypes[i]);
 
         const obstacle = new Obstacles(
-          this,
-          obstacleXPosition,
-          obstacleYPosition,
-          obstacleType,
-          0,
-          getRandomPointValue()
+            this,
+            this.obstacleXPositions[i],
+            obstacleYPosition,
+            this.obstacleTypes[i],
+            0,
+            getRandomPointValue.call(this)
         ).setOrigin(0, 0);
-
         obstacle.moveSpeed = this.obstacleMoveSpeed;
         obstacle.body.debugShowBody = false;
         obstacle.body.debugShowVelocity = false;
-
         this.obstacles.push(obstacle);
-      }
+        }
 
-      // Call createRandomObstacle to add a new random obstacle
-      createRandomObstacle.call(this);
+        // randomize obstacles
+        function getObstacleYPosition(obstacleType) {
+        switch (obstacleType) {
+            case 'rocket':
+            return this.game.config.height * 0.71;
+            case 'spikes':
+            return this.game.config.height * 0.01;
+            case 'box':
+            return this.game.config.height * 0.73;
+            default:
+            return 0;
+        }
+        }
 
-      function getRandomPointValue() {
+        // let random = Math.floor(Math.random() * 3) + 1;
+        // console.log(random);
+        // switch (random) {
+        //   case 1:
+        //     this.obstacles.add(new Obstacles(this, game.config.width + 600, game.config.height * 0.73, 'box', 0, game.settings.obstacleSpeed, game.config.height * 0.73));
+        //     break;
+        //   case 2:
+        //     this.obstacles.add(new Obstacles(this, game.config.width + 1200, game.config.height * 0.71, 'rocket', 0, game.settings.obstacleSpeed, game.config.height * 0.71));
+        //     break;
+        //   case 3:
+        //     this.obstacles.add(new Obstacles(this, game.config.width + 1800, game.config.height * 0.01, 'spikes', 0, game.settings.obstacleSpeed, game.config.height * 0.01));
+        //     break;
+        //   default:
+        //     break;
+        // }
+
+
+        function getRandomPointValue() {
         return Phaser.Math.Between(0, 50);
-      }
+        }
 
       // border
       this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FFFF).setOrigin(0, 0);
@@ -190,16 +202,19 @@ class Play extends Phaser.Scene {
       });
   }
 
-  update() {     
-      this.time.delayedCall(15000, () => {
-          console.log('call')
-          this.obstacles.forEach((obstacle) => {
-              obstacle.moveSpeed *= 1.001;
-            });
+  update() {
+    this.time.delayedCall(15000, function() {
+      console.log('call');
+      this.obstacles.forEach(function(obstacle) {
+        if (obstacle.moveSpeed < obstacle.moveSpeed*1.5) { 
+          obstacle.moveSpeed *= 1.001;
+        }
+      }, this); 
+    }, null, this);
+    
           // this.obstacle01.moveSpeed*2
           // this.obstacle02.moveSpeed*2
           // this.obstacle03.moveSpeed*2
-      })
       
       // check key input for restart
       if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
