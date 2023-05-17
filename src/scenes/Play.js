@@ -63,80 +63,58 @@ class Play extends Phaser.Scene {
       this.p1Character.body.debugShowVelocity = false; 
       this.add.existing(this.p1Character);
 
-    // obstacles
-    this.obstacleSpacing = game.config.width / 3;
-    this.obstacleMoveSpeed = game.settings.obstacleSpeed;
-    this.obstacleTypes = ['rocket', 'spikes', 'box'];
-    Phaser.Utils.Array.Shuffle(this.obstacleTypes);
-    this.obstacleXPositions = [
-      game.config.width + 400,
-      game.config.width + 200,
-      game.config.width
-    ];
-    this.obstacles = [];
+      // obstacles
+      this.obstacleSpacing = game.config.width / 3;
+      this.obstacleMoveSpeed = game.settings.obstacleSpeed;
+      this.obstacleTypes = ['rocket', 'spikes', 'box'];
+      Phaser.Utils.Array.Shuffle(this.obstacleTypes);
+      this.obstacleXPositions = [game.config.width];
+      this.obstacles = [];
 
-    // Function to get the Y position for a given obstacle type
-    function getObstacleYPosition(obstacleType) {
-      switch (obstacleType) {
-        case 'rocket':
-          return game.config.height * 0.71;
-        case 'spikes':
-          return game.config.height * 0.01;
-        case 'box':
-          return game.config.height * 0.73;
-        default:
-          return 0;
+      // Function to get the Y position for a given obstacle type
+      function getObstacleYPosition(obstacleType) {
+        switch (obstacleType) {
+          case 'rocket':
+            return game.config.height * 0.71;
+          case 'spikes':
+            return game.config.height * 0.01;
+          case 'box':
+            return game.config.height * 0.73;
+          default:
+            return 0;
+        }
       }
-    }
 
-    for (let i = 0; i < this.obstacleTypes.length; i++) {
-      const obstacleYPosition = getObstacleYPosition(this.obstacleTypes[i]);
+      // Function to create a new random obstacle
+      function createRandomObstacle() {
+        const randomIndex = Math.floor(Math.random() * this.obstacleTypes.length);
+        const obstacleType = this.obstacleTypes[randomIndex];
+        const obstacleYPosition = getObstacleYPosition(obstacleType);
+        const obstacleXPosition = game.config.width + 400; // Adjust the starting position as needed
 
-      const obstacle = new Obstacles(
-        this,
-        this.obstacleXPositions[i],
-        obstacleYPosition,
-        this.obstacleTypes[i],
-        0,
-        getRandomPointValue()
-      ).setOrigin(0, 0);
+        const obstacle = new Obstacles(
+          this,
+          obstacleXPosition,
+          obstacleYPosition,
+          obstacleType,
+          0,
+          getRandomPointValue()
+        ).setOrigin(0, 0);
 
-      obstacle.moveSpeed = this.obstacleMoveSpeed;
-      obstacle.body.debugShowBody = false;
-      obstacle.body.debugShowVelocity = false;
+        obstacle.moveSpeed = this.obstacleMoveSpeed;
+        obstacle.body.debugShowBody = false;
+        obstacle.body.debugShowVelocity = false;
 
-      this.obstacles.push(obstacle);
-    }
+        this.obstacles.push(obstacle);
+      }
 
-    // Function to create a new random obstacle
-    function createRandomObstacle() {
-      const randomIndex = Math.floor(Math.random() * this.obstacleTypes.length);
-      const obstacleType = this.obstacleTypes[randomIndex];
-      const obstacleYPosition = getObstacleYPosition(obstacleType);
-      const obstacleXPosition = game.config.width + 400; // Adjust the starting position as needed
-
-      const obstacle = new Obstacles(
-        this,
-        obstacleXPosition,
-        obstacleYPosition,
-        obstacleType,
-        0,
-        getRandomPointValue()
-      ).setOrigin(0, 0);
-
-      obstacle.moveSpeed = this.obstacleMoveSpeed;
-      obstacle.body.debugShowBody = false;
-      obstacle.body.debugShowVelocity = false;
-
-      this.obstacles.push(obstacle);
-    }
-
-    // Call createRandomObstacle to add a new random obstacle
-    createRandomObstacle.call(this);
+      // Call createRandomObstacle to add a new random obstacle
+      createRandomObstacle.call(this);
 
       function getRandomPointValue() {
-      return Phaser.Math.Between(0, 50);
+        return Phaser.Math.Between(0, 50);
       }
+
       // border
       this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FFFF).setOrigin(0, 0);
       this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -222,6 +200,7 @@ class Play extends Phaser.Scene {
           // this.obstacle02.moveSpeed*2
           // this.obstacle03.moveSpeed*2
       })
+      
       // check key input for restart
       if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
           this.restart();
@@ -262,9 +241,9 @@ class Play extends Phaser.Scene {
     this.scene.restart();
     console.log('reset');
     this.sfx.stop();
-    this.startTime = this.time.now; // Reset the start time
-    this.currentTime = 0; // Reset the current time
-    this.timerText.text = 'Time: 0.00'; // Update the timer display
+    this.startTime = this.time.now; 
+    this.currentTime = 0; 
+    this.timerText.text = 'Time: 0.00'; 
 }
 
   death() {
@@ -313,32 +292,4 @@ class Play extends Phaser.Scene {
     const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     return formattedTime;
 }
-
-//         // score add and repaint
-//         this.p1Score += obstacle.points;
-//         console.log(this.p1Score)
-//         this.scoreLeft.text = this.p1Score;
-
-//         // random explosion sounds
-//         let random = Math.floor(Math.random() * 4) + 1
-//         console.log(random)
-//         switch (random)
-//         {
-//             case 1:
-//                 this.sound.play('sfx_explosion1');
-//                 break;
-//             case 2:
-//                 this.sound.play('sfx_explosion2');
-//                 break;
-//             case 3:
-//                 this.sound.play('sfx_explosion3');
-//                 break;
-//             case 4:
-//                 this.sound.play('sfx_explosion4');
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
 }
-
