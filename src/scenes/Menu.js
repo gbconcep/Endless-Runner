@@ -60,14 +60,20 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/3.2, game.config.height/6.5, 'Press UP key to jump', directionConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.4, game.config.height/6.5, 'Press DOWN key to slide', directionConfig).setOrigin(0.5);
 
-        // show high score
-        // this.add.text(225, 420, 'BEST TIME:').setOrigin(0, 0);
-        // this.hiScore = this.add.text(400, 420, this.bestTime);
-        this.bestTimeText = this.add.text(215, 15, `BEST TIME: ${this.formatTime(game.bestTime)}`, {
-            fontFamily: 'Courier',
-            fontSize: '20px',
-            color: '#ffffff'
-          });
+        // Check if there is a high score
+        if (game.bestTime === null) {
+            this.bestTimeText = this.add.text(215, 15, `BEST TIME: 0:00`, {
+                fontFamily: 'Courier',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
+        } else {
+            this.bestTimeText = this.add.text(215, 15, `BEST TIME: ${this.formatTime(game.bestTime)}`, {
+                fontFamily: 'Courier',
+                fontSize: '20px',
+                color: '#ffffff'
+            });
+        }
 
         this.add.text(35, 420, `Game by Gavin Concepcion. Additional help from Dominic Fanaris.`, {
             fontFamily: 'Courier',
@@ -80,11 +86,6 @@ class Menu extends Phaser.Scene {
             fontSize: '15px',
             color: '#ffffff'
         });
-
-            // 'Physics Source: https://stackoverflow.com/questions/55302007/how-add-physics-to-phaser-3-sprite'
-            // 'Gravity: https://phasergames.com/using-gravity-in-phaser-3/'
-            // 'https://newdocs.phaser.io/docs/3.54.0/Phaser.GameObjects.Components.Size#setSize'
-            // 'Running Sound Effect from Sound Library: https://www.youtube.com/watch?v=GZmkrgndFOs'
     }
 
     update() {
