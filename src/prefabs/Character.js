@@ -38,7 +38,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
   
     // slide button
     if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
-      if (!this.isJumping && this.canSlide && this.isSliding) {
+      if (!this.isJumping && this.canSlide) {
         this.slide();
         // Set a timer to stop the slide animation after 1 second
         this.scene.time.delayedCall(1300, this.stopSlide, [], this);

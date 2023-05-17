@@ -11,7 +11,7 @@ class Obstacles extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        // move spaceship left
+        // obstacles move left
         this.x -= this.moveSpeed;
         // wrap around from left edge to right edge
         if(this.x <= 0 - this.width) {

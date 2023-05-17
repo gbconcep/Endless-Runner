@@ -5,6 +5,7 @@ Physics Source: https://stackoverflow.com/questions/55302007/how-add-physics-to-
 Gravity: https://phasergames.com/using-gravity-in-phaser-3/
 https://newdocs.phaser.io/docs/3.54.0/Phaser.GameObjects.Components.Size#setSize
 Running Sound Effect from Sound Library: https://www.youtube.com/watch?v=GZmkrgndFOs
+Additional help: Dominic Fanaris, Jared  Pettitt, and a little bit of ChatGBT honestly. 
 The biggest challeges that I faced was getting the sprites to work and change based off of the character's action as well as the jump physics.
 An implementation I am proud of is implementing a sliding mechanic that helps avoid certain obstacles.
 I'm very proud of the sprite I made for my player character. 

@@ -106,23 +106,6 @@ class Play extends Phaser.Scene {
         }
         }
 
-        // let random = Math.floor(Math.random() * 3) + 1;
-        // console.log(random);
-        // switch (random) {
-        //   case 1:
-        //     this.obstacles.add(new Obstacles(this, game.config.width + 600, game.config.height * 0.73, 'box', 0, game.settings.obstacleSpeed, game.config.height * 0.73));
-        //     break;
-        //   case 2:
-        //     this.obstacles.add(new Obstacles(this, game.config.width + 1200, game.config.height * 0.71, 'rocket', 0, game.settings.obstacleSpeed, game.config.height * 0.71));
-        //     break;
-        //   case 3:
-        //     this.obstacles.add(new Obstacles(this, game.config.width + 1800, game.config.height * 0.01, 'spikes', 0, game.settings.obstacleSpeed, game.config.height * 0.01));
-        //     break;
-        //   default:
-        //     break;
-        // }
-
-
         function getRandomPointValue() {
         return Phaser.Math.Between(0, 50);
         }
@@ -189,10 +172,8 @@ class Play extends Phaser.Scene {
       this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN key to slide', this.scoreConfig).setOrigin(0.5);
 
       // Initialize variables
-      this.currentTime = 0; // Track the current time
-      this.bestTime = game.bestTime || 0; // Load the best time from game or set to 0
-
-      // ...
+      this.currentTime = 0; 
+      this.bestTime = game.bestTime || 0; 
 
       // Display the best time
       this.bestTimeText = this.add.text(250, 420, `BEST TIME: ${this.formatTime(this.bestTime)}`, {
@@ -211,11 +192,7 @@ class Play extends Phaser.Scene {
         }
       }, this); 
     }, null, this);
-    
-          // this.obstacle01.moveSpeed*2
-          // this.obstacle02.moveSpeed*2
-          // this.obstacle03.moveSpeed*2
-      
+
       // check key input for restart
       if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE)) {
           this.restart();
@@ -224,8 +201,6 @@ class Play extends Phaser.Scene {
           this.scene.start("menuScene");
           this.sfx.stop()
       }
-
-      // this.timeRight.text = Math.ceil(this.clock.elapsed) / 1000;
 
       if (!this.gameOver) {
         let elapsedSeconds = (this.time.now - this.startTime) / 1000; 
@@ -247,7 +222,7 @@ class Play extends Phaser.Scene {
       if (this.currentTime > this.bestTime) {
         this.bestTime = this.currentTime;
         this.bestTimeText.setText(`BEST TIME: ${this.formatTime(this.bestTime)}`);
-        game.bestTime = this.bestTime; // Store the best time in game for persistence
+        game.bestTime = this.bestTime; 
     }
     
   }
@@ -283,8 +258,8 @@ class Play extends Phaser.Scene {
     }
     
     // Adjust the additionalWidth value to change the hitbox size
-    const additionalWidthLeft = 35; // No change on the left side
-    const additionalWidthRight = 0; // Decrease the hitbox width on the right side
+    const additionalWidthLeft = 35; 
+    const additionalWidthRight = 0; 
   
     // Collision detection code
     if (

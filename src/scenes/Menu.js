@@ -60,6 +60,10 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.width/3.2, game.config.height/6.5, 'Press UP key to jump', directionConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.4, game.config.height/6.5, 'Press DOWN key to slide', directionConfig).setOrigin(0.5);
 
+        // Initialize variables
+        this.currentTime = 0; 
+        this.bestTime = game.bestTime || 0; 
+
         // Check if there is a high score
         if (game.bestTime === null) {
             this.bestTimeText = this.add.text(215, 15, `BEST TIME: 0:00`, {
@@ -90,7 +94,6 @@ class Menu extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-            // easy mode
             game.settings = {
                 jumpSpeed: 5,
                 obstacleSpeed: 2,
@@ -108,7 +111,6 @@ class Menu extends Phaser.Scene {
       }
 
       formatTime(time) {
-        // Helper function to format the time as MM:SS
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
         const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
