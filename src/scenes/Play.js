@@ -163,7 +163,7 @@ class Play extends Phaser.Scene {
           fixedWidth: 100
       };
       
-      this.startTime = this.time.now; // Store the starting time
+      this.startTime = this.time.now; 
       
       this.timerText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, 'Time: 0.00', timeConfig);
       
@@ -230,7 +230,7 @@ class Play extends Phaser.Scene {
         }
 
         // clock update
-        let elapsedSeconds = (this.time.now - this.startTime) / 1000; // Calculate the elapsed time in seconds
+        let elapsedSeconds = (this.time.now - this.startTime) / 1000; 
 
         this.timerText.text = elapsedSeconds.toFixed(2);
 
