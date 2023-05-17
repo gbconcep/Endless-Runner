@@ -107,25 +107,6 @@ class Play extends Phaser.Scene {
         function getRandomPointValue() {
         return Phaser.Math.Between(0, 50);
         }
-        // this.order = [game.config.width + borderUISize*20, game.config.width + borderUISize*10, game.config.width];
-        // this.random = Phaser.Math.Between(0, 2);
-        // this.obstacle01 = new Obstacles(this, this.order[this.random], game.config.height*0.72, 'rocket', 0, 0).setOrigin(0, 0);
-        // this.obstacle01.moveSpeed = game.settings.obstacleSpeed
-        // delete this.order[this.random]
-        // do {
-        //     this.random = Phaser.Math.Between(0, 2)
-        // } while (this.order[this.random] !== undefined);
-        // this.obstacle02 = new Obstacles(this, this.order[this.random], game.config.height*0.25, 'spikes', 0, 25).setOrigin(0,0);
-        // this.obstacle02.setDisplaySize(game.config.width/10, game.config.height/2)
-        // this.obstacle02.moveSpeed = game.settings.obstacleSpeed
-        // delete this.order[this.random]
-        // do {
-        //     this.random = Phaser.Math.Between(0, 2)
-        // } while (this.order[this.random] !== undefined);
-        // this.obstacle03 = new Obstacles(this, this.order[this.random], game.config.height*0.73, 'box', 0, 0).setOrigin(0,0);
-        // this.obstacle03.moveSpeed = game.settings.obstacleSpeed
-        // delete this.order[this.random]
-        // speed increase after 30 seconds
         // border
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -253,7 +234,6 @@ class Play extends Phaser.Scene {
               if (this.checkCollision(this.p1Character, obstacle)) {
                 this.death()
                 this.menuScreen()
-                // Handle collision
               }
             });
           }
