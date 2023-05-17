@@ -49,13 +49,13 @@ class Play extends Phaser.Scene {
         frameRate: 9,
         repeat: -1
         });
-        // slide animation
+        // dying animation
         this.anims.create({
             key: 'dying',
-            frames: this.anims.generateFrameNames('character', {prefix: 'Character Sprite ', start: 9, end: 9}),
-        frameRate: 3,
-        repeat: -1
-        });
+            frames: [{ key: 'character', frame: 'Character Sprite 9' }],
+            frameRate: 1, 
+            repeat: 0, 
+          });
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character', 0, this.time).setOrigin(0.5, 0); 
         // add obstacles (x3)
@@ -108,7 +108,7 @@ class Play extends Phaser.Scene {
             case 'rocket':
             return this.game.config.height * 0.72;
             case 'spikes':
-            return this.game.config.height * 0.25;
+            return this.game.config.height * 0.03;
             case 'box':
             return this.game.config.height * 0.73;
             default:
@@ -203,40 +203,44 @@ class Play extends Phaser.Scene {
 
         // how to play
         this.add.text(game.config.width/2.4, game.config.height/6.5, 'Press UP key to jump', this.scoreConfig).setOrigin(0.5);
-        this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN ket to slide', this.scoreConfig).setOrigin(0.5);
+        this.add.text(game.config.width/1.3, game.config.height/6.5, 'Press DOWN key to slide', this.scoreConfig).setOrigin(0.5);
         
         // high score display
         // this.add.text(250, 420, 'HIGH SCORE:').setOrigin(0, 0);
         // this.hiScore = this.add.text(400, 420, game.highScore);
     }
 
-
     update() {
-        this.p1Character.update();
+        // this.p1Character.update();
         // slide button
         if (Phaser.Input.Keyboard.JustDown(keyDOWN)) {
             if (!this.p1Character.isJumping) {
-                this.p1Character.slide();
-                // Set a timer to stop the slide animation after 1 second
-                this.time.delayedCall(1000, this.p1Character.stopSlide, [], this.p1Character);
-        
-                // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
-                this.physics.world.colliders.getActive().forEach((collider) => {
-                    if (
-                        (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-                        (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject)) ||
-                        (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
-                        (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject))
-                    ) {
-                        collider.active = false;
-                    }
-                });
+              this.p1Character.slide();
+              // Set a timer to stop the slide animation after 1 second
+              this.time.delayedCall(1000, this.p1Character.stopSlide, [], this.p1Character);
+          
+              // Disable collision with 'spikes' and 'rocket' obstacles during the slide animation
+              this.physics.world.colliders.getActive().forEach((collider) => {
+                const isSpikeCollision =
+                  (collider.bodyA === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+                  (collider.bodyB === this.p1Character.body && spikesGroup.getChildren().includes(collider.bodyA.gameObject));
+          
+                const isRocketCollision =
+                  (collider.bodyA === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyB.gameObject)) ||
+                  (collider.bodyB === this.p1Character.body && rocketGroup.getChildren().includes(collider.bodyA.gameObject));
+          
+                if (isSpikeCollision || isRocketCollision) {
+                  collider.active = false;
+                }
+              });
             }
-        }
+          }
 
         this.time.delayedCall(30000, () => {
             console.log('call')
-            this.obstacle.moveSpeed*2
+            this.obstacles.forEach((obstacle) => {
+                obstacle.moveSpeed *= 2;
+              });
             // this.obstacle01.moveSpeed*2
             // this.obstacle02.moveSpeed*2
             // this.obstacle03.moveSpeed*2
@@ -266,6 +270,7 @@ class Play extends Phaser.Scene {
               obstacle.update();
               if (this.checkCollision(this.p1Character, obstacle)) {
                 this.death()
+                this.menuScreen()
                 // Handle collision
               }
             });
@@ -307,58 +312,35 @@ class Play extends Phaser.Scene {
     }
 
     death() {
+        this.p1Character.sfxRunning.stop();
+        this.p1Character.anims.stop(); 
+        this.p1Character.anims.play('dying');
+        this.sound.play('sfx_death');
+        this.p1Character.setGravityY(0);
+        this.p1Character.body.velocity = new Phaser.Math.Vector2(0, 0);
+    }
+    
+
+    menuScreen() {
         this.add.text(game.config.width/1.9, game.config.height/2, 'GAME OVER', this.scoreConfig).setOrigin(0.5);
         this.add.text(game.config.width/1.9, game.config.height/2 + 64, 'PRESS SPACE to Restart or <- for Menu', this.scoreConfig).setOrigin(0.5);
         this.gameOver = true;
-        this.p1Character.sfxRunning.stop();
-        this.p1Character.anims.play('dying');
-        this.p1Character.setGravityY(0)
-        this.p1Character.body.velocity = new Phaser.Math.Vector2(0, 0)
-        // this.p1CHaracter.sfxRunning.pause();
-        // this.deathScream.play();
     }
 
     checkCollision(p1Character, obstacle) {
         // Simple AABB checking
         if (
-          p1Character.x < obstacle.x + obstacle.width &&
-          p1Character.x + p1Character.width > obstacle.x &&
-          p1Character.y < obstacle.y + obstacle.height &&
-          p1Character.y + p1Character.height > obstacle.y
-        ) {
-          return true;
+            p1Character.x < obstacle.x + obstacle.width &&
+            p1Character.x + p1Character.width > obstacle.x &&
+            p1Character.y < obstacle.y + obstacle.height &&
+            p1Character.y + p1Character.height > obstacle.y
+          ) {
+            // Collision detected
+            return true;
         } else {
           return false;
         }
       }
-
-
-    // checkCollision(p1Character, obstacle03) {
-    //     // simple AABB checking
-    //     if (p1Character.x < obstacle03.x + obstacle03.width && p1Character.x + p1Character.width > obstacle03.x && p1Character.y < obstacle03.y + obstacle03.height && p1Character.height + p1Character.y > obstacle03.y) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    // }
-
-    // checkCollision(p1Character, obstacle02) {
-    //     // simple AABB checking
-    //     if (p1Character.x < obstacle02.x + obstacle02.width && p1Character.x + p1Character.width > obstacle02.x && p1Character.y < obstacle02.y + obstacle02.height && p1Character.height + p1Character.y > obstacle02.y) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    // }
-
-    // checkCollision(p1Character, obstacle01) {
-    //     // simple AABB checking
-    //     if (p1Character.x < obstacle01.x + obstacle01.width && p1Character.x + p1Character.width > obstacle01.x && p1Character.y < obstacle01.y + obstacle01.height && p1Character.height + p1Character.y > obstacle01.y) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    // }
     
     characterExplode(obstacle) {
         console.log("hello")

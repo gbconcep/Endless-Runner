@@ -1,10 +1,13 @@
 // Obstacle prefab
-class Obstacles extends Phaser.GameObjects.Sprite {
+class Obstacles extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, pointValue) {
-        // let randomObject = Phaser.Math.Between(0, 480)
-        super(scene, x, y, texture, frame);
-        scene.add.existing(this);
-        this.points = pointValue;
+      super(scene, x, y, texture, frame);
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+      this.body.setSize(this.width * 0.5, this.height, true); // Adjust the x-axis hitbox size as needed
+      this.body.setOffset(this.width * 0.10, 0); // Adjust the x-axis hitbox offset as needed
+      this.moveSpeed = 0;
+      this.pointValue = pointValue;
     }
 
     update() {
