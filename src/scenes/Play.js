@@ -58,29 +58,19 @@ class Play extends Phaser.Scene {
           });
         // character
         this.p1Character = new Character(this, game.config.width/6, game.config.height*0.71, 'character', 0, this.time).setOrigin(0.5, 0); 
-        // add obstacles (x3)
         this.physics.add.collider(this.p1Character, this.floor);
-        // Define constants for obstacle spacing and movement speed
-        this.obstacleSpacing = game.config.width / 3; // Adjust as needed
-        this.obstacleMoveSpeed = game.settings.obstacleSpeed; // Adjust as needed
-
-        // Create an array of obstacle types
+        // obstacles
+        this.obstacleSpacing = game.config.width / 3; 
+        this.obstacleMoveSpeed = game.settings.obstacleSpeed;
         this.obstacleTypes = ['rocket', 'spikes', 'box'];
-
-        // Shuffle the obstacle types array randomly
         Phaser.Utils.Array.Shuffle(this.obstacleTypes);
-
-        // Calculate initial x-coordinate positions for obstacles
         this.obstacleXPositions = [
         game.config.width + this.obstacleSpacing * 2,
         game.config.width + this.obstacleSpacing,
         game.config.width
         ];
-
-        // Create an array to store the obstacle instances
         this.obstacles = [];
 
-        // Create and position the obstacles
         for (let i = 0; i < this.obstacleTypes.length; i++) {
         const obstacleYPosition = getObstacleYPosition.call(this, this.obstacleTypes[i]);
 
@@ -96,13 +86,11 @@ class Play extends Phaser.Scene {
         this.obstacles.push(obstacle);
         }
 
-        // Helper function to get a random Y position for obstacles
         function getRandomYPosition() {
-        // Adjust the range of Y positions based on your requirements
         return Phaser.Math.Between(game.config.height * 0.2, game.config.height * 0.8);
         }
 
-        // Helper function to get the Y position for specific obstacle types
+        // randomize obstacles
         function getObstacleYPosition(obstacleType) {
         switch (obstacleType) {
             case 'rocket':
@@ -116,9 +104,7 @@ class Play extends Phaser.Scene {
         }
         }
 
-        // Helper function to get a random point value for obstacles
         function getRandomPointValue() {
-        // Adjust the range of point values based on your requirements
         return Phaser.Math.Between(0, 50);
         }
         // this.order = [game.config.width + borderUISize*20, game.config.width + borderUISize*10, game.config.width];
@@ -157,11 +143,7 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
         });
-        // this.anims.create({
-        //     key: 'run',
-        //     frames: this.anims.generateFrameNumbers('character', { start: 0, end: 2, first: 0}),
-        //     frameRate: 30
-        // });
+
         // initiate score
         this.p1Score = 0;
 
@@ -275,40 +257,6 @@ class Play extends Phaser.Scene {
               }
             });
           }
-
-        // if(!this.gameOver) {
-        //     this.p1Character.update();
-        //     this.obstacle.update(); 
-        //     // this.obstacle01.update(); 
-        //     // this.obstacle02.update();
-        //     // this.obstacle03.update();
-        // }
-        // check collisions
-        // if(this.checkCollision(this.p1Character, this.obstacle)) {
-        //     // 03 || this.obstacle02 || this.obstacle01
-        //     this.sound.play('sfx_death');
-        //     // this.p1Character.reset();
-        //     // this.characterExplode(this.obstacle03);
-        //     this.death()
-        // }
-        // if (this.checkCollision(this.p1Character, this.obstacle02)) {
-        //     // this.sound.play('sfx_death');
-        //     // this.p1Character.reset();
-        //     // this.characterExplode(this.obstacle02);
-        //     this.death()
-        // }
-        // if (this.checkCollision(this.p1Character, this.obstacle01)) {
-        //     // this.sound.play('sfx_death');
-        //     // this.p1Character.reset();
-        //     // this.characterExplode(this.obstacle01);
-        //     this.death()
-        // }
-
-        // highScore
-        // if (game.highScore <= this.p1Score) {
-        //     game.highScore = this.p1Score
-        //     this.hiScore.text = game.highScore
-        // }
     }
 
     death() {

@@ -1,11 +1,3 @@
-/*
-Add Physics body to character
-Enable gravity
-Make sure character doesn't go below a certain height
-Make sure character collides with obstacles
-Set body velocity
-*/
-
 // Character prefab
 class Character extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame) {
