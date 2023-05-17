@@ -54,6 +54,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.anims.play('slide');
       } else {
         this.anims.play('running', true);
+        this.sfxRunning.play();
       }
     }
   
@@ -90,8 +91,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
   
     stopSlide() {
       this.isSliding = false;
-      this.anims.play('running', true);
-      this.sfxRunning.play();
+      this.anims.stop('slide', true);
       this.body.allowGravity = false;
       this.canSlide = true;
       this.scene.ignoreCollision = false;
@@ -102,7 +102,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
           this.land();
         }
       }
-      
       
     land() {
         this.isJumping = false;
@@ -124,4 +123,5 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     }
   }
   
+
   
