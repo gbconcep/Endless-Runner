@@ -16,9 +16,10 @@ class Character extends Phaser.Physics.Arcade.Sprite {
     this.sfxJump = scene.sound.add('sfx_jump');
     this.sfxVoice = scene.sound.add('sfx_voice');
     this.sfxRunning = scene.sound.add('sfx_running');
-    this.anims.play('running');
     this.sfxRunning.play();
+    this.sfxRunning.setVolume(1);
     this.sfxRunning.setLoop(true);
+    this.anims.play('running');
     this.ground = scene.ground;
     scene.physics.add.collider(this, scene.floor, scene.handleCollision, null, scene);
   }
@@ -50,15 +51,17 @@ class Character extends Phaser.Physics.Arcade.Sprite {
   
     if (this.isJumping) {
       this.anims.play('jump');
+      this.sfxRunning.pause();
     } else if (this.isSliding) {
       this.anims.play('slide');
+      this.sfxRunning.pause();
     } else {
       this.anims.play('running', true);
       if (!this.sfxRunning.isPlaying) {
-        this.sfxRunning.play();
+        this.sfxRunning.resume();
       }
     }
-  }
+  }  
   
   enforceHeightLimit() {
     const targetY = this.scene.game.config.height * 0.71;

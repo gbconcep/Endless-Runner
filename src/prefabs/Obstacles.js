@@ -1,4 +1,3 @@
-// Obstacle prefab
 class Obstacles extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, pointValue) {
       super(scene, x, y, texture, frame);
@@ -9,15 +8,16 @@ class Obstacles extends Phaser.Physics.Arcade.Sprite {
       this.moveSpeed = 0;
       this.pointValue = pointValue;
     }
-
+   
     update() {
-        // obstacles move left
+        // move obstacle left
         this.x -= this.moveSpeed;
         // wrap around from left edge to right edge
-        if(this.x <= 0 - this.width) {
-            this.reset();
+        if (this.x <= 0 - this.width) {
+            this.scene.placeRandomObstacle(this);
         }
     }
+
 
     // position reset
     reset() {
